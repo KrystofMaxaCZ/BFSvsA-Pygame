@@ -1,0 +1,21 @@
+Jelikoz pygame je nejaky sus tak nejde udelat vytvorit primo objekt button
+tak udelam to ze si udelam classu na Button ktera bude umet to ze kdyz 
+se na ni klikne tak zmeni barvu a bude si udrzovat informaci nebo to je jedno
+
+okej tak to jde udelat tak ze si udelam vlastnti tridu Button jak v javafx nice
+a pak proste vyrobim n x n objektu buttons
+
+
+
+TODO, je potreba jeste udelat jakoze ohranicit a zablkovoat kliknuti lze udelat pomoci toho type 
+mega sexy reseni s type
+noo a tedka jakoze on si to obravi a da ulozit, vsechna se prepisou na type 3 takze nejde zmenit
+kdyby chtel zmenit tak si zapne zase edit mod takze se zase vsechna zmeni o minus 5 treba jasne
+volna cesta = 1
+zed = 0
+edit mod = +5
+zpatky z edit modu - 5
+treba
+
+
+jeste jde aby slide treba
