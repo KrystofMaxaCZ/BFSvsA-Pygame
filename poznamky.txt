@@ -7,8 +7,8 @@ a pak proste vyrobim n x n objektu buttons
 
 
 
-TODO, je potreba jeste udelat jakoze ohranicit a zablkovoat kliknuti lze udelat pomoci toho type 
-mega sexy reseni s type
+TODO, je potreba jeste udelat jakoze ohranicit a zablkovoat kliknuti lze udelat pomoci toho type DONE
+mega sexy reseni s type DONE
 noo a tedka jakoze on si to obravi a da ulozit, vsechna se prepisou na type 3 takze nejde zmenit
 kdyby chtel zmenit tak si zapne zase edit mod takze se zase vsechna zmeni o minus 5 treba jasne
 volna cesta = 1
@@ -18,4 +18,36 @@ zpatky z edit modu - 5
 treba
 
 
+TODO:
+Udelat reseni najit nejrcyhlejsi cestu
+    - pripravit data
+    - funkce findTheWay
+        - co bude vracet? asi nice
+        - bude obarvovat 
+Zlepsit spageta kod u reseni souseda findTheWay
+
 jeste jde aby slide treba
+
+def 
+findTheWay():
+0. zpracovani sebe
+    podivam se jestli jsem cil
+        pokud ano, koncim **DONE** , zpetne obarvim buttons po kterych jsem sem prisel
+1. podivam se na sousedy
+    jestli existuje soused, tak ho zpracuju
+    zpracovani souseda:
+        pdoivam se jaky je typ, pokud type == 0, muzu na nej jestli
+        nastavim mu predchudce na sebe
+        soused.distance = distance + 1
+        pridam ho do fronty na zpracovani 
+2. zpracuju sousedy
+    hotovo
+3. jdu na sousedy
+asi proste jen konec a nactu znovu forntu
+class
+BUTTON
+ - type
+    type 0 = volne policko
+    type 1 = zed
+    type 2 = border
+    type 10 = navstiveny // pro pruchod 

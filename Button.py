@@ -6,8 +6,12 @@ class Button:
     takhle budeme mit kazde policko jako obejkt ktery ma sve interakce
     """
     # konstruktor tridy Button, potrebujeme vedet baru, souradnice, velikost 
-    def __init__(self, screen, color, x, y, width, height, button_type):
+    def __init__(self, screen, row, col,  color, x, y, width, height, button_type):
         self.screen = screen
+        self.row = row
+        self.col = col
+        self.predecessor = None
+        self.distance = -10
         self.color = color
         self.x = x
         self.y = y
