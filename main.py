@@ -56,6 +56,16 @@ def prepare2DGrid():
                 row.append(button)
         node_matrix.append(row)
 
+def newGame():
+    global starting_node,end_node, node_matrix
+
+    node_matrix = []
+    prepare2DGrid()
+    starting_node = node_matrix[1][1]
+    end_node = node_matrix[POLE_HEIGHT-2][POLE_WIDTH-2]
+
+    return starting_node, end_node
+
 
 def wayBack(node: Button, starting_node):
     """
@@ -229,12 +239,13 @@ def ASTAR(node_matrix, starting_node, end_node):
         print("cesta neexistuje")
 
     print("Pocet navstivenych nodes = ", pocet_pruchodu)
-# PREPARE GAME
-prepare2DGrid()
+# # PREPARE GAME
+# prepare2DGrid()
 
-starting_node = node_matrix[1][1]
-end_node = node_matrix[POLE_HEIGHT-2][POLE_WIDTH-2]
+# starting_node = node_matrix[1][1]
+# end_node = node_matrix[POLE_HEIGHT-2][POLE_WIDTH-2]
 
+starting_node, end_node = newGame()
 # GAME LOOP
 running = True
 while running:
@@ -259,6 +270,8 @@ while running:
                 BFS(node_matrix, starting_node, end_node)
             if event.key == pygame.K_q:
                 ASTAR(node_matrix, starting_node, end_node)
+            if event.key == pygame.K_r:
+                starting_node, end_node = newGame()
     screen.fill(BACKGROUND_COLOR)
     
     
