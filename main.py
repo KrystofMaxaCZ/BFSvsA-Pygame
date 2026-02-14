@@ -1,13 +1,14 @@
 import pygame
 from Button import Button
 from collections import deque
+from queue import PriorityQueue
 
 # https://www.geeksforgeeks.org/python/pygame-tutorial/
 # Initialize Pygame
 pygame.init()
 
 # Set up the game window
-resolution = (750, 750)
+resolution = (1500, 800)
 screen = pygame.display.set_mode(resolution)
 pygame.display.set_caption("Labyrinth")
 
@@ -66,7 +67,7 @@ def wayBack(node: Button, starting_node):
     if node.predecessor != starting_node:
         node.predecessor.color = WAY_COLOR
         wayBack(node.predecessor, starting_node)
-
+        
 # https://www.youtube.com/watch?v=HZ5YTanv5QE
 def BFS(node_matrix, starting_node, end_node):
     """
@@ -83,6 +84,7 @@ def BFS(node_matrix, starting_node, end_node):
     # indexy v 2D poli
     row = starting_node.row
     col = starting_node.col
+    pocet_pruchodu = 0
 
     # starting_node = node_matrix[row, col]
     found = False
@@ -91,7 +93,7 @@ def BFS(node_matrix, starting_node, end_node):
         node = queue.popleft()
         row = node.row
         col = node.col
-
+        pocet_pruchodu += 1
         # pokud jsem v cili, koncim, nasel jsem cestu
         if node == end_node:
             print("Nasel jsem cestu")
@@ -133,7 +135,100 @@ def BFS(node_matrix, starting_node, end_node):
     if found == False:
         print("cesta neexistuje")
 
+    print("Pocet navstivenych nodes = ", pocet_pruchodu)
 
+
+
+def nodeScore(node, end_node) -> int:
+    """
+    Docstring for nodeScore
+    
+    :param node: Description
+    :param end_node: Description
+    :return: vrati score toho 
+    :rtype: int, score pro heruistiku
+    """
+    node_predecessor = node.predecessor
+    node.distance = node_predecessor.distance + 1
+    row_end = end_node.row
+    col_end = end_node.col
+    row_node = node.row
+    col_node = node.col
+
+    score = abs(row_end - row_node) + abs(col_end - col_node)
+    score += node.distance
+    return score
+    
+def ASTAR(node_matrix, starting_node, end_node):
+    """
+    Docstring for ASTAR
+    velice podobne BFS
+    jediny rozdil je ze pouzivame prioritni frontu
+
+    """
+ # zacneme od startu
+    pqueue = PriorityQueue()
+    starting_node.distance = 0
+    pqueue.put((0, starting_node))
+    # indexy v 2D poli
+    row = starting_node.row
+    col = starting_node.col
+    pocet_pruchodu = 0
+
+    # starting_node = node_matrix[row, col]
+    found = False
+    while pqueue.empty() != True:
+        # nactu node z fronty
+        node = pqueue.get()[1]
+        row = node.row
+        col = node.col
+        pocet_pruchodu += 1
+        # pokud jsem v cili, koncim, nasel jsem cestu
+        if node == end_node:
+            print("Nasel jsem cestu")
+            found = True
+            wayBack(node, starting_node)
+            break
+        else:
+            # osetreni vystupu mimo pole
+            if (row - 1) >= 0:
+                neighbour_node = node_matrix[row - 1][col]
+                # type = 0 ... zelena availible space 
+                if neighbour_node.type == 0:
+                    neighbour_node.predecessor = node
+                    neighbour_node.type = 10
+                    neighbour_node_score = nodeScore(neighbour_node, end_node)
+
+                    pqueue.put((neighbour_node_score, neighbour_node))
+            if (row + 1) < POLE_HEIGHT:
+                neighbour_node = node_matrix[row + 1][col]
+                if neighbour_node.type == 0:
+                    neighbour_node.predecessor = node
+                    neighbour_node.type = 10
+                    neighbour_node_score = nodeScore(neighbour_node, end_node)
+
+                    pqueue.put((neighbour_node_score, neighbour_node))
+            if (col - 1) >= 0:
+                neighbour_node = node_matrix[row][col - 1]
+                if neighbour_node.type == 0:
+                    neighbour_node.predecessor = node
+                    neighbour_node.type = 10
+                    neighbour_node_score = nodeScore(neighbour_node, end_node)
+
+                    pqueue.put((neighbour_node_score, neighbour_node))
+            if (col + 1) < POLE_WIDTH:
+                neighbour_node = node_matrix[row][col + 1]
+                if neighbour_node.type == 0:
+                    neighbour_node.predecessor = node
+                    neighbour_node.type = 10
+                    neighbour_node_score = nodeScore(neighbour_node, end_node)
+
+                    pqueue.put((neighbour_node_score, neighbour_node))    
+
+    if found == False:
+        print("cesta neexistuje")
+
+    print("Pocet navstivenych nodes = ", pocet_pruchodu)
 # PREPARE GAME
 prepare2DGrid()
 
@@ -162,6 +257,8 @@ while running:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_w:
                 BFS(node_matrix, starting_node, end_node)
+            if event.key == pygame.K_q:
+                ASTAR(node_matrix, starting_node, end_node)
     screen.fill(BACKGROUND_COLOR)
     
     

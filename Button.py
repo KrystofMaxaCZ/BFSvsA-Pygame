@@ -30,3 +30,7 @@ class Button:
                 return self.rect.collidepoint(event.pos)
         return False
     
+    def __lt__(self, other):
+        # Tento kus kodu vygenerovala AI, reseni toho jak funguje prioritni fronta kdyz maji oba prvky stejne score
+        # Tímto říkáš: "Je mi jedno, které tlačítko je dřív"
+        return False
