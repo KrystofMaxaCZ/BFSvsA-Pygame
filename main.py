@@ -16,50 +16,69 @@ BACKGROUND_COLOR = (177, 191, 170)
 
 POLE_WIDTH = 10
 POLE_HEIGHT = 10
-WALL_COLOR = (250,0,0)
-BOARDER_COLOR = (0,0,0)
-AVAILABLE_COLUMN_COLOR = (0,250,0)
+WALL_COLOR = (179, 2, 2)
+BOARDER_COLOR = (71, 62, 44)
+WAY_COLOR = (20, 86, 199)
+AVAILABLE_COLUMN_COLOR = (0, 209, 42)
 
 
 
 
 #PRIPRAVA PROSTREDI
-
-buttons = [] # nepotrebne, smaze se 
 node_matrix = [] # 2D pole, list kde jsou prvky listy obashujici objkety typu Button
 
 # Vyroba policek pomoci objektu Button
-for y in range(POLE_HEIGHT):
-    row = []
-    for x in range(POLE_WIDTH):
-        # border - vyroba okraje pole
-        if (x == 0) or (x == (POLE_WIDTH - 1)) or (y == 0) or (y==(POLE_HEIGHT - 1)):
-            button = Button(screen,y,x,BOARDER_COLOR, 200 + x * 35, 200 + y * 35, 33, 33, 2)
-            buttons.append(button) # smazat
-            row.append(button)
-        # border - vyroba okraje pole
-        elif (x==1 and y==1) or (x==(POLE_WIDTH-2) and y==(POLE_HEIGHT-2)):
-            button = Button(screen,y,x, (231, 245, 39), 200 + x * 35, 200 + y * 35, 33, 33, 0)
-            buttons.append(button)
-            row.append(button)
-        # free space - zelene policka volna 
-        else:
-            button = Button(screen,y,x, AVAILABLE_COLUMN_COLOR, 200 + x * 35, 200 + y * 35, 33, 33, 0)
-            buttons.append(button)
-            row.append(button)
-    node_matrix.append(row)
+def prepare2DGrid():
+    """
+    Docstring for prepare2DGrid
+    Vyroba policek pomoci objektu Button
+    - rozlisujeme border/hranici a starting/end node
+
+    objekty jsou ulozene logicky:
+        - v row jsou samotne prvky buttons
+        - v node_matric jsou ulozene listy row
+    """
+    for y in range(POLE_HEIGHT):
+        row = []
+        for x in range(POLE_WIDTH):
+            # border - vyroba okraje pole
+            if (x == 0) or (x == (POLE_WIDTH - 1)) or (y == 0) or (y==(POLE_HEIGHT - 1)):
+                button = Button(screen,y,x,BOARDER_COLOR, 200 + x * 35, 200 + y * 35, 33, 33, 2)
+                row.append(button)
+            # starting and end
+            elif (x==1 and y==1) or (x==(POLE_WIDTH-2) and y==(POLE_HEIGHT-2)):
+                button = Button(screen,y,x, (231, 245, 39), 200 + x * 35, 200 + y * 35, 33, 33, 0)
+                row.append(button)
+            # free space - zelene policka volna 
+            else:
+                button = Button(screen,y,x, AVAILABLE_COLUMN_COLOR, 200 + x * 35, 200 + y * 35, 33, 33, 0)
+                row.append(button)
+        node_matrix.append(row)
 
 
 def wayBack(node: Button, starting_node):
+    """
+    Rekurzivne najde cestu z end_node do starting_node a obarvuje
+    
+    :param node: prvni zavolani je to end_node, dalsi jsou to predchudci, proto pojmenovani pouze node
+    :param starting_node: node ze ktereho jsme zacinali, tak tam chceme dorazit
+    """
     if node.predecessor != starting_node:
-        node.predecessor.color = (0,0,255)
+        node.predecessor.color = WAY_COLOR
         wayBack(node.predecessor, starting_node)
 
 # https://www.youtube.com/watch?v=HZ5YTanv5QE
-def findTheWay(node_matrix, starting_node, end_node):
+def BFS(node_matrix, starting_node, end_node):
+    """
+    Najde nejkratsi cestu mezi starting_node a end_node
+    
+    :param node_matrix: 2Dpole buttons/node 
+    :param starting_node: node ze ktereho zaciname
+    :param end_node: node kde koncime
+    """
     # zacneme od startu
     queue = deque()
-    starting_node.distnace = 10
+    starting_node.distance = 10
     queue.append(starting_node)
     # indexy v 2D poli
     row = starting_node.row
@@ -115,27 +134,13 @@ def findTheWay(node_matrix, starting_node, end_node):
         print("cesta neexistuje")
 
 
+# PREPARE GAME
+prepare2DGrid()
 
-
-# zkouska
-# findTheWay(node_matrix, node_matrix[1][1])
-# print()
-# print()
-# print()
-# for row in node_matrix:
-#     for button in row:
-#         print(f"{button.distance} ", end="")
-#     print()
-
-# print()
-# print()
-# for row in node_matrix:
-#     for button in row:
-#         print(button)
-
-# GAME LOOP
 starting_node = node_matrix[1][1]
 end_node = node_matrix[POLE_HEIGHT-2][POLE_WIDTH-2]
+
+# GAME LOOP
 running = True
 while running:
     for event in pygame.event.get():
@@ -156,12 +161,13 @@ while running:
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_w:
-                findTheWay(node_matrix, node_matrix[1][1], node_matrix[8][8])
+                BFS(node_matrix, starting_node, end_node)
     screen.fill(BACKGROUND_COLOR)
     
     
-    for btn in buttons:
-        btn.draw()
+    for row in node_matrix:
+        for button in row:
+            button.draw()
         
 
     pygame.display.update()
