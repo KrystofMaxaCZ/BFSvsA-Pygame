@@ -11,7 +11,7 @@ class Button:
         self.row = row
         self.col = col
         self.predecessor = None
-        self.distance = -10
+        self.distance = 0
         self.color = color
         self.x = x
         self.y = y

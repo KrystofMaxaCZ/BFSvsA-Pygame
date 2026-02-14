@@ -39,7 +39,7 @@ for y in range(POLE_HEIGHT):
             row.append(button)
         # border - vyroba okraje pole
         elif (x==1 and y==1) or (x==(POLE_WIDTH-2) and y==(POLE_HEIGHT-2)):
-            button = Button(screen,y,x, (231, 245, 39), 200 + x * 35, 200 + y * 35, 33, 33, 2)
+            button = Button(screen,y,x, (231, 245, 39), 200 + x * 35, 200 + y * 35, 33, 33, 0)
             buttons.append(button)
             row.append(button)
         # free space - zelene policka volna 
@@ -50,13 +50,17 @@ for y in range(POLE_HEIGHT):
     node_matrix.append(row)
 
 
+def wayBack(node: Button, starting_node):
+    if node.predecessor != starting_node:
+        node.predecessor.color = (0,0,255)
+        wayBack(node.predecessor, starting_node)
+
 # https://www.youtube.com/watch?v=HZ5YTanv5QE
-def findTheWay(node_matrix, starting_node):
+def findTheWay(node_matrix, starting_node, end_node):
     # zacneme od startu
     queue = deque()
-    starting_node.distnace = 0
+    starting_node.distnace = 10
     queue.append(starting_node)
-    end_node = node_matrix[9][9]
     # indexy v 2D poli
     row = starting_node.row
     col = starting_node.col
@@ -65,13 +69,15 @@ def findTheWay(node_matrix, starting_node):
     found = False
     while len(queue) != 0:
         # nactu node z fronty
-        node = queue.pop()
+        node = queue.popleft()
         row = node.row
         col = node.col
 
         # pokud jsem v cili, koncim, nasel jsem cestu
         if node == end_node:
             print("Nasel jsem cestu")
+            found = True
+            wayBack(node, starting_node)
             break
         else:
             # osetreni vystupu mimo pole
@@ -79,29 +85,29 @@ def findTheWay(node_matrix, starting_node):
                 neighbour_node = node_matrix[row - 1][col]
                 # type = 0 ... zelena availible space 
                 if neighbour_node.type == 0:
-                    # neighbour_node.predecessor = node
-                    # neighbour_node.distance = node.distance + 1
+                    neighbour_node.predecessor = node
+                    neighbour_node.distance = node.distance + 1
                     neighbour_node.type = 10
                     queue.append(neighbour_node)
             if (row + 1) < POLE_HEIGHT:
                 neighbour_node = node_matrix[row + 1][col]
                 if neighbour_node.type == 0:
-                    # neighbour_node.predecessor = node
-                    # neighbour_node.distance = node.distance + 1
+                    neighbour_node.predecessor = node
+                    neighbour_node.distance = node.distance + 1
                     neighbour_node.type = 10
                     queue.append(neighbour_node)
             if (col - 1) >= 0:
                 neighbour_node = node_matrix[row][col - 1]
                 if neighbour_node.type == 0:
-                    # neighbour_node.predecessor = node
-                    # neighbour_node.distance = node.distance + 1
+                    neighbour_node.predecessor = node
+                    neighbour_node.distance = node.distance + 1
                     neighbour_node.type = 10
                     queue.append(neighbour_node)
             if (col + 1) < POLE_WIDTH:
                 neighbour_node = node_matrix[row][col + 1]
                 if neighbour_node.type == 0:
-                    # neighbour_node.predecessor = node
-                    # neighbour_node.distance = node.distance + 1
+                    neighbour_node.predecessor = node
+                    neighbour_node.distance = node.distance + 1
                     neighbour_node.type = 10
                     queue.append(neighbour_node)    
 
@@ -110,15 +116,26 @@ def findTheWay(node_matrix, starting_node):
 
 
 
+
 # zkouska
-findTheWay(node_matrix, node_matrix[1][1])
+# findTheWay(node_matrix, node_matrix[1][1])
+# print()
+# print()
+# print()
+# for row in node_matrix:
+#     for button in row:
+#         print(f"{button.distance} ", end="")
+#     print()
 
-
+# print()
+# print()
 # for row in node_matrix:
 #     for button in row:
 #         print(button)
 
 # GAME LOOP
+starting_node = node_matrix[1][1]
+end_node = node_matrix[POLE_HEIGHT-2][POLE_WIDTH-2]
 running = True
 while running:
     for event in pygame.event.get():
@@ -131,29 +148,15 @@ while running:
                 for button in row:
                     if button.is_clicked(event):
                         if button.type == 1:
-                            button.color = WALL_COLOR # na zelenou
+                            button.color = AVAILABLE_COLUMN_COLOR 
                             button.type = 0
-                        elif button.type == 0:
-                            button.color = AVAILABLE_COLUMN_COLOR # na cervenou zpatky
+                        elif button.type == 0 and button != starting_node and button!=end_node:
+                            button.color = WALL_COLOR 
                             button.type = 1 
 
-        # if event.type == pygame.KEYDOWN:
-        #     if event.key == pygame.K_w:
-        #         buttons[12].color = (0,0,255)
-        #         buttons[13].color = (0,0,255)
-        #         buttons[14].color = (0,0,255)
-        #         buttons[15].color = (0,0,255)
-        #         buttons[25].color = (0,0,255)
-        #         buttons[35].color = (0,0,255)
-        #         buttons[45].color = (0,0,255)
-        #         buttons[46].color = (0,0,255)
-        #         buttons[47].color = (0,0,255)
-        #         buttons[48].color = (0,0,255)
-        #         buttons[25].color = (0,0,255)
-        #         buttons[48].color = (0,0,255)
-        #         buttons[58].color = (0,0,255)
-        #         buttons[68].color = (0,0,255)
-        #         buttons[78].color = (0,0,255)
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_w:
+                findTheWay(node_matrix, node_matrix[1][1], node_matrix[8][8])
     screen.fill(BACKGROUND_COLOR)
     
     
