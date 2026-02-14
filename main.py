@@ -22,7 +22,19 @@ BOARDER_COLOR = (71, 62, 44)
 WAY_COLOR = (20, 86, 199)
 AVAILABLE_COLUMN_COLOR = (0, 209, 42)
 
+# MENU
+NOTACTIVE_COLOR = (100, 100, 100)
+ACTIVE_COLOR = (50, 200, 50)
+START_BUTTON_COLOR = (200, 150, 0)
+RESET_BUTTON_COLOR = (200, 50, 50)
 
+button_bfs = Button(screen, 0, 0, ACTIVE_COLOR, 700, 100, 90, 50, None, "BFS")
+button_astar = Button(screen, 0, 0, NOTACTIVE_COLOR, 700, 170, 90, 50, None, "A*")
+button_start = Button(screen, 0, 0, START_BUTTON_COLOR, 700, 240, 90, 50, None, "SPUSTIT")
+button_reset = Button(screen, 0, 0, RESET_BUTTON_COLOR, 700, 310, 90, 50, None, "RESET")
+
+menu_buttons = [button_bfs, button_astar, button_start, button_reset]
+selected_algo = "BFS" # vychozi volba
 
 
 #PRIPRAVA PROSTREDI
@@ -255,15 +267,35 @@ while running:
 
         # kdyz klikneme na talcitko tak se zmeni jeho barva
         if event.type == pygame.MOUSEBUTTONDOWN:
-            for row in node_matrix:
-                for button in row:
-                    if button.is_clicked(event):
-                        if button.type == 1:
-                            button.color = AVAILABLE_COLUMN_COLOR 
-                            button.type = 0
-                        elif button.type == 0 and button != starting_node and button!=end_node:
-                            button.color = WALL_COLOR 
-                            button.type = 1 
+            if button_bfs.is_clicked(event):
+                selected_algo = "BFS"
+                button_bfs.color = ACTIVE_COLOR
+                button_astar.color = NOTACTIVE_COLOR
+
+            elif button_astar.is_clicked(event):
+                selected_algo = "ASTAR"
+                button_astar.color = ACTIVE_COLOR
+                button_bfs.color = NOTACTIVE_COLOR
+
+            elif button_start.is_clicked(event):
+                if selected_algo == "BFS":
+                    BFS(node_matrix, starting_node, end_node)
+                else:
+                    ASTAR(node_matrix, starting_node, end_node)
+
+            elif button_reset.is_clicked(event):
+                starting_node, end_node = newGame()
+
+            else:
+                for row in node_matrix:
+                    for button in row:
+                        if button.is_clicked(event):
+                            if button.type == 1:
+                                button.color = AVAILABLE_COLUMN_COLOR 
+                                button.type = 0
+                            elif button.type == 0 and button != starting_node and button!=end_node:
+                                button.color = WALL_COLOR 
+                                button.type = 1 
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_w:
@@ -271,14 +303,18 @@ while running:
             if event.key == pygame.K_q:
                 ASTAR(node_matrix, starting_node, end_node)
             if event.key == pygame.K_r:
+                # RESET
                 starting_node, end_node = newGame()
+
+
     screen.fill(BACKGROUND_COLOR)
-    
-    
+    # vykresleni mrizky
     for row in node_matrix:
         for button in row:
             button.draw()
-        
+    
+    for button in menu_buttons:
+        button.draw()
 
     pygame.display.update()
 
