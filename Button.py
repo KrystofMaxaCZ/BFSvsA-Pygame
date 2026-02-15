@@ -40,3 +40,5 @@ class Button:
     def __lt__(self, other):
         # Tímto říkáš: "Je mi jedno, které tlačítko je dřív"
         return False
+    def print(self):
+        print(f"Button: row:{self.row}, col:{self.col}, color: {self.color}, type:{self.type}, text:{self.text}")

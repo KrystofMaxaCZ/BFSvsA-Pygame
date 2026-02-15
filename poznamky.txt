@@ -25,6 +25,7 @@ Udelat reseni najit nejrcyhlejsi cestu
         - co bude vracet? asi nice
         - bude obarvovat 
 Zlepsit spageta kod u reseni souseda findTheWay
+Chtelo by to prepsat logiku type na text asi pro lepsi prehlednost, sice porovnani stringu je pain no ale tak python 
 
 jeste jde aby slide treba
 

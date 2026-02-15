@@ -21,19 +21,21 @@ WALL_COLOR = (179, 2, 2)
 BOARDER_COLOR = (71, 62, 44)
 WAY_COLOR = (20, 86, 199)
 AVAILABLE_COLUMN_COLOR = (0, 209, 42)
-
+STARTING_NODE_COLOR = (231, 245, 39)
 # MENU
 NOTACTIVE_COLOR = (100, 100, 100)
 ACTIVE_COLOR = (50, 200, 50)
 START_BUTTON_COLOR = (200, 150, 0)
 RESET_BUTTON_COLOR = (200, 50, 50)
+RESET_ALGO_COLOR = (160, 50, 50)
 
 button_bfs = Button(screen, 0, 0, ACTIVE_COLOR, 700, 100, 90, 50, None, "BFS")
 button_astar = Button(screen, 0, 0, NOTACTIVE_COLOR, 700, 170, 90, 50, None, "A*")
 button_start = Button(screen, 0, 0, START_BUTTON_COLOR, 700, 240, 90, 50, None, "SPUSTIT")
 button_reset = Button(screen, 0, 0, RESET_BUTTON_COLOR, 700, 310, 90, 50, None, "RESET")
+button_reset_alg = Button(screen, 0, 0, RESET_ALGO_COLOR, 700, 380, 90, 50, None, "RESET_ALG")
 
-menu_buttons = [button_bfs, button_astar, button_start, button_reset]
+menu_buttons = [button_bfs, button_astar, button_start, button_reset, button_reset_alg]
 selected_algo = "BFS" # vychozi volba
 
 
@@ -60,7 +62,7 @@ def prepare2DGrid():
                 row.append(button)
             # starting and end
             elif (x==1 and y==1) or (x==(POLE_WIDTH-2) and y==(POLE_HEIGHT-2)):
-                button = Button(screen,y,x, (231, 245, 39), 200 + x * 35, 200 + y * 35, 33, 33, 0)
+                button = Button(screen,y,x, STARTING_NODE_COLOR, 200 + x * 35, 200 + y * 35, 33, 33, 0)
                 row.append(button)
             # free space - zelene policka volna 
             else:
@@ -68,6 +70,26 @@ def prepare2DGrid():
                 row.append(button)
         node_matrix.append(row)
 
+def resetAlg():
+    for row in node_matrix:
+        for button in row:
+            if button.color == AVAILABLE_COLUMN_COLOR or button.color == WAY_COLOR:
+                button.type = 0
+                button.distance = 0
+                button.predecessor = None
+                button.color = AVAILABLE_COLUMN_COLOR
+            elif button.color == STARTING_NODE_COLOR:
+                button.type = 0
+                button.distance = 0
+                button.predecessor = None
+                button.color = STARTING_NODE_COLOR
+            elif button.color == WALL_COLOR:
+                button.type = 1
+                button.distance = 0
+                button.predecessor = None
+                
+                
+            
 def newGame():
     global starting_node,end_node, node_matrix
 
@@ -99,7 +121,10 @@ def BFS(node_matrix, starting_node, end_node):
     :param starting_node: node ze ktereho zaciname
     :param end_node: node kde koncime
     """
+    # vycisteni po vice spustenich
+    # resetAlg()
     # zacneme od startu
+    resetAlg()
     queue = deque()
     starting_node.distance = 10
     queue.append(starting_node)
@@ -188,7 +213,11 @@ def ASTAR(node_matrix, starting_node, end_node):
     jediny rozdil je ze pouzivame prioritni frontu
 
     """
+    # vycisteni po vice spustenich
+    # resetAlg()
  # zacneme od startu
+    resetAlg()
+
     pqueue = PriorityQueue()
     starting_node.distance = 0
     pqueue.put((0, starting_node))
@@ -197,7 +226,6 @@ def ASTAR(node_matrix, starting_node, end_node):
     col = starting_node.col
     pocet_pruchodu = 0
 
-    # starting_node = node_matrix[row, col]
     found = False
     while pqueue.empty() != True:
         # nactu node z fronty
@@ -286,6 +314,9 @@ while running:
             elif button_reset.is_clicked(event):
                 starting_node, end_node = newGame()
 
+            elif button_reset_alg.is_clicked(event):
+                resetAlg()
+
             else:
                 for row in node_matrix:
                     for button in row:
@@ -296,7 +327,8 @@ while running:
                             elif button.type == 0 and button != starting_node and button!=end_node:
                                 button.color = WALL_COLOR 
                                 button.type = 1 
-
+                            # vypsat o jaky button se jedna
+                            button.print()
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_w:
                 BFS(node_matrix, starting_node, end_node)
