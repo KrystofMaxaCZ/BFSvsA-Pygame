@@ -36,6 +36,7 @@ class Algorithms:
         if node.predecessor != starting_node:
             node.predecessor.color = WAY_COLOR
             self.wayBack(node.predecessor, starting_node)
+        
     def nodeScore(self, node, end_node) -> int:
         """
         Docstring for nodeScore
@@ -55,6 +56,7 @@ class Algorithms:
         score = abs(row_end - row_node) + abs(col_end - col_node)
         score += node.distance
         return score
+    
     def BFS(self, starting_node, end_node):
         """
         Najde nejkratsi cestu mezi starting_node a end_node
@@ -84,10 +86,10 @@ class Algorithms:
             col = node.col
             pocet_pruchodu += 1
 
-            node.text = str(node.distance)
-            text_surf = node.font.render(node.text, True, (255, 255, 255)) 
-            text_rect = text_surf.get_rect(center=node.rect.center)
-            node.screen.blit(text_surf, text_rect)
+            # node.text = str(node.distance)
+            # text_surf = node.font.render(node.text, True, (255, 255, 255)) 
+            # text_rect = text_surf.get_rect(center=node.rect.center)
+            # node.screen.blit(text_surf, text_rect)
             # pokud jsem v cili, koncim, nasel jsem cestu
             if node == end_node:
                 print("Nasel jsem cestu")
@@ -129,7 +131,7 @@ class Algorithms:
         if found == False:
             print("cesta neexistuje")
 
-        print("Pocet navstivenych nodes = ", pocet_pruchodu)
+        print("BFS: Pocet navstivenych nodes = ", pocet_pruchodu)
 
     def ASTAR(self, starting_node, end_node):
         """
@@ -160,10 +162,10 @@ class Algorithms:
             col = node.col
             pocet_pruchodu += 1
 
-            node.text = str(node.distance)
-            text_surf = node.font.render(node.text, True, (255, 255, 255)) 
-            text_rect = text_surf.get_rect(center=node.rect.center)
-            node.screen.blit(text_surf, text_rect)
+            # node.text = str(node.distance)
+            # text_surf = node.font.render(node.text, True, (255, 255, 255)) 
+            # text_rect = text_surf.get_rect(center=node.rect.center)
+            # node.screen.blit(text_surf, text_rect)
             # pokud jsem v cili, koncim, nasel jsem cestu
             if node == end_node:
                 print("Nasel jsem cestu")
@@ -209,4 +211,4 @@ class Algorithms:
         if found == False:
             print("cesta neexistuje")
 
-        print("Pocet navstivenych nodes = ", pocet_pruchodu)
+        print("ASTAR: Pocet navstivenych nodes = ", pocet_pruchodu)

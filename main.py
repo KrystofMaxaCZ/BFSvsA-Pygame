@@ -10,23 +10,13 @@ import pygame
 from MenuScene import MenuScene
 from GameScenes import run_scene_1, run_scene_2
 
-# https://www.geeksforgeeks.org/python/pygame-tutorial/
-# Initialize Pygame
-pygame.init()
-
-# Set up the game window
-resolution = (1500, 800)
-screen = pygame.display.set_mode(resolution)
-pygame.display.set_caption("Labyrinth")
-
-
 def main():
     # https://www.geeksforgeeks.org/python/pygame-tutorial/
     # Initialize Pygame
     pygame.init()
     menu = MenuScene()
     # Set up the game window
-    resolution = (1500, 800)
+    resolution = (1000, 700)
     screen = pygame.display.set_mode(resolution)
     pygame.display.set_caption("Labyrinth")
 
