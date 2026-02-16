@@ -1,11 +1,4 @@
-import pygame   
-import pygame_menu
-from Button import Button
-from collections import deque
-from queue import PriorityQueue
-from Algorithms import Algorithms
 from constants import *
-
 import pygame
 from MenuScene import MenuScene
 from GameScenes import run_scene_1, run_scene_2
