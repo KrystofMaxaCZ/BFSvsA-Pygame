@@ -7,6 +7,14 @@ a pak proste vyrobim n x n objektu buttons
 
 
 
+
+
+TODO 16.2.:
+    - udelat scenu pro porovnani algoritmu jak prohledaji pole
+
+
+
+
 TODO, je potreba jeste udelat jakoze ohranicit a zablkovoat kliknuti lze udelat pomoci toho type DONE
 mega sexy reseni s type DONE
 noo a tedka jakoze on si to obravi a da ulozit, vsechna se prepisou na type 3 takze nejde zmenit
