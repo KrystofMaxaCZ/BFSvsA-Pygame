@@ -59,13 +59,9 @@ def run_scene_1(screen):
 
     menu_buttons = [button_bfs, button_astar, button_start, button_reset, button_reset_alg]
 
-    
-    selected_algo = "BFS" # vychozi volba
-
     starting_node, end_node = newGame()
     selected_algo = "BFS" # vychozi volba
     running = True
-    clock = pygame.time.Clock()
 
     while running:
         for event in pygame.event.get():
@@ -88,9 +84,9 @@ def run_scene_1(screen):
 
                 elif button_start.is_clicked(event):
                     if selected_algo == "BFS":
-                        algs.BFS(starting_node, end_node)
+                        algs.BFS(starting_node, end_node, "find")
                     else:
-                        algs.ASTAR(starting_node, end_node)
+                        algs.ASTAR(starting_node, end_node, "find")
 
                 elif button_reset.is_clicked(event):
                     starting_node, end_node = newGame()
@@ -122,7 +118,74 @@ def run_scene_1(screen):
 
         pygame.display.update()
 
+
 def run_scene_2(screen):
+    """
+    Myslenka sceny 2:
+        tentokrat mame dve matice tlacitek
+        na jednom gridu bude videt jak prochazi algoritmus BFS
+        na druhem jak to dela ASTAR
+
+        Maji spolecne bludiste
+
+        Takze vlastne udelame dvakrat node_matrix jen je od sebe odlisime a druhy posuneme
+
+        A pak synchronizaci nastavovani zdi v poli
+    """
+
+    node_matrix_1 = [] 
+    node_matrix_2 = [] 
+    
+    algs1 = Algorithms(node_matrix_1)
+    algs2 = Algorithms(node_matrix_2)
+
+    def prepare2DGrid():
+        grid1_start_x = 50
+        grid_width = POLE_WIDTH * 35
+        gap = 50
+        grid2_start_x = grid1_start_x + grid_width + gap
+
+        for y in range(POLE_HEIGHT):
+            row1 = []
+            row2 = []
+            for x in range(POLE_WIDTH):
+                # Grid 1 logic
+                if (x == 0) or (x == (POLE_WIDTH - 1)) or (y == 0) or (y==(POLE_HEIGHT - 1)):
+                    button1 = Button(screen,y,x,BOARDER_COLOR, grid1_start_x + x * 35, 200 + y * 35, 33, 33, 2)
+                    btn2 = Button(screen,y,x,BOARDER_COLOR, grid2_start_x + x * 35, 200 + y * 35, 33, 33, 2)
+                    row1.append(button1)
+                    row2.append(btn2)
+                elif (x==1 and y==1) or (x==(POLE_WIDTH-2) and y==(POLE_HEIGHT-2)):
+                    button1 = Button(screen,y,x, STARTING_NODE_COLOR, grid1_start_x + x * 35, 200 + y * 35, 33, 33, 0)
+                    btn2 = Button(screen,y,x, STARTING_NODE_COLOR, grid2_start_x + x * 35, 200 + y * 35, 33, 33, 0)
+                    row1.append(button1)
+                    row2.append(btn2)
+                else:
+                    button1 = Button(screen,y,x, AVAILABLE_COLUMN_COLOR, grid1_start_x + x * 35, 200 + y * 35, 33, 33, 0)
+                    btn2 = Button(screen,y,x, AVAILABLE_COLUMN_COLOR, grid2_start_x + x * 35, 200 + y * 35, 33, 33, 0)
+                    row1.append(button1)
+                    row2.append(btn2)
+            
+            node_matrix_1.append(row1)
+            node_matrix_2.append(row2)
+                
+    def newGame():
+        global starting_node_1, end_node_1, starting_node_2, end_node_2
+
+        node_matrix_1.clear()
+        node_matrix_2.clear()
+        prepare2DGrid()
+        
+        starting_node_1 = node_matrix_1[1][1]
+        end_node_1 = node_matrix_1[POLE_HEIGHT-2][POLE_WIDTH-2]
+
+        starting_node_2 = node_matrix_2[1][1]
+        end_node_2 = node_matrix_2[POLE_HEIGHT-2][POLE_WIDTH-2]
+
+        return starting_node_1, end_node_1, starting_node_2, end_node_2
+
+    starting_node_1, end_node_1, starting_node_2, end_node_2 = newGame()
+
     running = True
     while running:
         for event in pygame.event.get():
@@ -130,11 +193,70 @@ def run_scene_2(screen):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE: return "MENU"
                 if event.key == pygame.K_1: return "LEVEL1"
+                
+                if event.key == pygame.K_l:
+                    # starting_node_1, end_node_1, starting_node_2, end_node_2 = newGame()
+                    algs1.BFS(starting_node_1, end_node_1, "compare")
+                    algs2.ASTAR(starting_node_2, end_node_2, "compare")
 
-        screen.fill((50, 0, 50)) # Tmavě fialová
-        font = pygame.font.SysFont("Arial", 40)
-        img = font.render("Scena 2 here ", True, (255, 255, 255))
-        screen.blit(img, (100, 200))
+                if event.key == pygame.K_r:
+                    starting_node_1, end_node_1, starting_node_2, end_node_2 = newGame()
+                    algs1.resetAlg()
+                    algs2.resetAlg()
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                # Loop pro prvni grid
+                for row in node_matrix_1:
+                    for button in row:
+                        if button.is_clicked(event):
+                            # chci synchronizovat nastaveni zdi (cervene barvy) aby oba dva meli stejne prostredi
+                            row_button = button.row
+                            col_button = button.col
+                            button_matrix_2 = node_matrix_2[row_button][col_button]
+                            if button.type == 1:
+                                button.color = AVAILABLE_COLUMN_COLOR 
+                                button.type = 0
+                                
+                                button_matrix_2.color = AVAILABLE_COLUMN_COLOR 
+                                button_matrix_2.type = 0
+                            elif button.type == 0 and button != starting_node_1 and button!=end_node_1:
+                                button.color = WALL_COLOR 
+                                button.type = 1 
+                                
+                                button_matrix_2.color = WALL_COLOR 
+                                button_matrix_2.type = 1 
+                            button.print()
+                
+                # Loop pro druhy grid
+                for row in node_matrix_2:
+                    for button in row:
+                        if button.is_clicked(event):
+                            row_button = button.row
+                            col_button = button.col
+                            button_matrix_1 = node_matrix_1[row_button][col_button]
+                            if button.type == 1:
+                                button.color = AVAILABLE_COLUMN_COLOR 
+                                button.type = 0
+
+                                button_matrix_1.color = AVAILABLE_COLUMN_COLOR 
+                                button_matrix_1.type = 0
+                            elif button.type == 0 and button != starting_node_2 and button!=end_node_2:
+                                button.color = WALL_COLOR 
+                                button.type = 1 
+
+                                button_matrix_1.color = WALL_COLOR 
+                                button_matrix_1.type = 1 
+                            button.print()
+
+        screen.fill(BACKGROUND_COLOR)
         
+        for row in node_matrix_1:
+            for button in row:
+                button.draw()
+
+        for row in node_matrix_2:
+            for button in row:
+                button.draw()
+
         pygame.display.update()
     return "MENU"

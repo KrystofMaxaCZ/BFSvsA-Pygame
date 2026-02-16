@@ -57,7 +57,7 @@ class Algorithms:
         score += node.distance
         return score
     
-    def BFS(self, starting_node, end_node):
+    def BFS(self, starting_node, end_node, purpose):
         """
         Najde nejkratsi cestu mezi starting_node a end_node
         
@@ -86,10 +86,13 @@ class Algorithms:
             col = node.col
             pocet_pruchodu += 1
 
-            # node.text = str(node.distance)
-            # text_surf = node.font.render(node.text, True, (255, 255, 255)) 
-            # text_rect = text_surf.get_rect(center=node.rect.center)
-            # node.screen.blit(text_surf, text_rect)
+            # abychom nemeli tu samou funkci ale videli postup tak pouzijeme promennou purpose, tedy ucel jestli je to na porovnani nebo ne
+            if purpose == "compare":
+                node.text = str(node.distance)
+                text_surf = node.font.render(node.text, True, (255, 255, 255)) 
+                text_rect = text_surf.get_rect(center=node.rect.center)
+                node.screen.blit(text_surf, text_rect)
+            
             # pokud jsem v cili, koncim, nasel jsem cestu
             if node == end_node:
                 print("Nasel jsem cestu")
@@ -133,7 +136,7 @@ class Algorithms:
 
         print("BFS: Pocet navstivenych nodes = ", pocet_pruchodu)
 
-    def ASTAR(self, starting_node, end_node):
+    def ASTAR(self, starting_node, end_node, purpose):
         """
         Docstring for ASTAR
         velice podobne BFS
@@ -162,10 +165,12 @@ class Algorithms:
             col = node.col
             pocet_pruchodu += 1
 
-            # node.text = str(node.distance)
-            # text_surf = node.font.render(node.text, True, (255, 255, 255)) 
-            # text_rect = text_surf.get_rect(center=node.rect.center)
-            # node.screen.blit(text_surf, text_rect)
+            if purpose == "compare":
+                node.text = str(node.distance)
+                text_surf = node.font.render(node.text, True, (255, 255, 255)) 
+                text_rect = text_surf.get_rect(center=node.rect.center)
+                node.screen.blit(text_surf, text_rect)
+
             # pokud jsem v cili, koncim, nasel jsem cestu
             if node == end_node:
                 print("Nasel jsem cestu")
