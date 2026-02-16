@@ -3,3 +3,7 @@ https://www.pygame.org/project-pyMap+-+2D+Tile+Mapping-2769-.html 2d pole ktere 
 https://www.geeksforgeeks.org/python/how-to-create-buttons-in-a-game-using-pygame/ zacatek jak funguje screen atd
 
 fornta prioritni https://www.geeksforgeeks.org/python/priority-queue-using-queue-and-heapdict-module-in-python/
+
+gemini vysvetlil jak rozdelit projekt na sceny 
+
+knihovna pro menu: https://pygame-menu.readthedocs.io/en/latest/
