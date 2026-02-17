@@ -479,4 +479,4 @@ def run_scene_2(screen):
             button.draw()
        
         pygame.display.update()
-    return scene
+    return "MENU"
