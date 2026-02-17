@@ -44,8 +44,10 @@ Pod každou mřížkou se zobrazuje text s celkovým počtem navštívených uzl
 * **Klávesa ESC:** Slouží pro návrat uživatele zpět do hlavního menu.
 * **Klávesa 1:** Přesun uživatele zpět na Scénu 1.
 
+
 ## Rozcestník
 * [Úvod](uvod.md)
 * [Uživatelská dokumentace](uzivatelskaPrirucka.md)
 * [Ukázky použití](examples.md)
 * [Programátorská dokumentace](programatorskaDokumentace.md)
+* [Instalace](instalace.md)

@@ -5,7 +5,7 @@ class Button:
     Objekt Button, budeme vyuzivat v main.py pro prehlednejsi generovani tlacitek = pole v 2D
     takhle budeme mit kazde policko jako obejkt ktery ma sve interakce
     """
-    # konstruktor tridy Button, potrebujeme vedet baru, souradnice, velikost 
+    # konstruktor tridy Button, potrebujeme vedet baru, souradnice, velikost...
     def __init__(self, screen, row, col,  color, x, y, width, height, button_type, text=""):
         self.screen = screen
         self.row = row

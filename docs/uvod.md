@@ -17,3 +17,4 @@ Tato aplikace slouží k interaktivní vizualizaci algoritmů BFS a A*. Dále k 
 * [Uživatelská dokumentace](uzivatelskaPrirucka.md)
 * [Ukázky použití](examples.md)
 * [Programátorská dokumentace](programatorskaDokumentace.md)
+* [Instalace](instalace.md)
