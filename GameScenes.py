@@ -93,10 +93,20 @@ def run_scene_1(screen):
     button_reset = Button(screen, 0, 0, RESET_BUTTON_COLOR, menu_x, start_y + 3*(button_h + space),  button_w, button_h, None, "RESET")
     button_reset_alg = Button(screen, 0, 0, RESET_ALGO_COLOR, menu_x, start_y + 4*(button_h + space),  button_w, button_h, None, "RESET_ALG")
 
-    menu_buttons = [button_bfs, button_astar, button_start, button_reset, button_reset_alg]
+    button_setup_start_end = Button(screen, 0, 0, BUTTON_START_END_COLOR, offset_x, offset_y - button_h -10,  button_w + 30, button_h, None, "SETUP START/END")
 
+    button_switch_scene = Button(screen, 0, 0, SWITCH_SCENE_COLOR, screen_width//2 - 50, 0, 100, 45, None, "SCENE 2")
+
+    menu_buttons = [button_bfs, button_astar, button_start, button_reset, button_reset_alg, button_switch_scene,button_setup_start_end]
+
+
+    
     starting_node, end_node = newGame()
     selected_algo = "BFS" # vychozi volba
+
+    select_mode = "create_grid"
+    selecting_node = "starting"
+
     running = True
 
     while running:
@@ -130,18 +140,47 @@ def run_scene_1(screen):
                 elif button_reset_alg.is_clicked(event):
                     algs.resetAlg()
 
+                elif button_switch_scene.is_clicked(event):
+                    return "LEVEL2"
+                elif button_setup_start_end.is_clicked(event):
+                    select_mode = "start_end"
+                    button_setup_start_end.color = (0,255,0)
                 else:
-                    for row in node_matrix:
-                        for button in row:
-                            if button.is_clicked(event):
-                                if button.type == 1:
-                                    button.color = AVAILABLE_COLUMN_COLOR 
-                                    button.type = 0
-                                elif button.type == 0 and button != starting_node and button!=end_node:
-                                    button.color = WALL_COLOR 
-                                    button.type = 1 
-                                # vypsat o jaky button se jedna
-                                button.print()
+                    if select_mode == "start_end":
+                        if selecting_node == "starting":
+                            for row in node_matrix:
+                                for button in row:
+                                    if button.is_clicked(event):
+                                        starting_node.color = AVAILABLE_COLUMN_COLOR  # stary start zpet na zelenou
+                                        starting_node = button                         # novy start
+                                        starting_node.color = STARTING_NODE_COLOR            # prebarvit na zlutou
+
+                                        starting_node.text = ""   
+                                        selecting_node = "ending"
+                        else:
+                            for row in node_matrix:
+                                for button in row:
+                                    if button.is_clicked(event):
+                                        end_node.color = AVAILABLE_COLUMN_COLOR  # stary cil zpet na zelenou
+                                        end_node = button # novy cil
+                                        end_node.color = STARTING_NODE_COLOR           # prebarvit na zlutou
+
+                                        end_node.text = ""   
+                                        selecting_node = "starting"
+                                        select_mode = "create_grid"
+                                        button_setup_start_end.color = BUTTON_START_END_COLOR
+                    else:
+                        for row in node_matrix:
+                                for button in row:
+                                    if button.is_clicked(event):
+                                        if button.type == 1:
+                                            button.color = AVAILABLE_COLUMN_COLOR 
+                                            button.type = 0
+                                        elif button.type == 0 and button != starting_node and button!=end_node:
+                                            button.color = WALL_COLOR 
+                                            button.type = 1 
+                                        # vypsat o jaky button se jedna
+                                        button.print()
 
         screen.fill(BACKGROUND_COLOR)
         # vykresleni mrizky
@@ -268,6 +307,10 @@ def run_scene_2(screen):
     
     button_spustit = Button(screen, 0, 0, START_BUTTON_COLOR, button_spustit_x, grid_bottom_y + 35, 160, 45, None, "SPUSTIT")
     button_reset_s2 = Button(screen, 0, 0, RESET_BUTTON_COLOR, button_reset_x, grid_bottom_y + 35, 160, 45, None, "RESET")
+    button_switch_scene = Button(screen, 0, 0, SWITCH_SCENE_COLOR, screen_width//2 - 50, 0, 100, 45, None, "SCENE 1")
+    button_setup_start_end = Button(screen, 0, 0, BUTTON_START_END_COLOR, 0, 0, 200, 45, None, "SETUP START/END")
+
+    buttons_to_print = [button_spustit, button_reset_s2, button_switch_scene, button_setup_start_end]
 
     def run_algorithms():
         nonlocal bfs_pruchody, astar_pruchody, starting_node_1, end_node_1, starting_node_2, end_node_2
@@ -289,42 +332,22 @@ def run_scene_2(screen):
     select_mode = "create_grid"
     selecting_node = "starting"
     running = True
+
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT: return "QUIT"
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE: return "MENU"
-                if event.key == pygame.K_1: return "LEVEL1"
-                if event.key == pygame.K_l:
-                    run_algorithms()
-
-                if event.key == pygame.K_r:
-                    reset_scene()
-                if event.key == pygame.K_s:
-                    # vyberu start
-                    # zjistim na jaky node jsem kliknul
-                    # prebarvim ho na zlutou a nastavim starting_node na tento button
-                    # zjistim na jaky node jsem kliknul
-                    # prebarvim ho na zlutou a nastavim end_node na tento button
-                    # if event.type == pygame.MOUSEBUTTONDOWN:
-                    #     for row in node_matrix_1:
-                    #         for button in row:
-                    #             if button.is_clicked(event):
-                    #                 starting_node_1 = button
-                    #                 starting_node_2 = button
-                    # if event.type == pygame.MOUSEBUTTONDOWN:
-                    #     for row in node_matrix_1:
-                    #         for button in row:
-                    #             if button.is_clicked(event):
-                    #                 end_node_1 = button
-                    #                 end_node_2 = button
-
-                    select_mode = "start_end"
+                if event.key == pygame.K_ESCAPE: return "MENU"               
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if button_spustit.is_clicked(event):
                     run_algorithms()
                 elif button_reset_s2.is_clicked(event):
                     reset_scene()
+                elif button_switch_scene.is_clicked(event):
+                    return "LEVEL1"
+                elif button_setup_start_end.is_clicked(event):
+                    select_mode = "start_end"
+                    button_setup_start_end.color = (0,255,0)
                 else:
                     if select_mode == "start_end":
                         if selecting_node == "starting":
@@ -372,6 +395,7 @@ def run_scene_2(screen):
                                         end_node_2.text = ""
                                         selecting_node = "starting"
                                         select_mode = "create_grid"
+                                        button_setup_start_end.color = BUTTON_START_END_COLOR
                                         
                             for row in node_matrix_2:
                                 for button in row:
@@ -387,6 +411,7 @@ def run_scene_2(screen):
                                         end_node_2.text = ""
                                     selecting_node = "starting"
                                     select_mode = "create_grid"
+                                    button_setup_start_end.color = BUTTON_START_END_COLOR
                     else:
                         # Loop pro prvni grid
                         for row in node_matrix_1:
@@ -450,9 +475,8 @@ def run_scene_2(screen):
         screen.blit(label_bfs, (grid1_x, grid_bottom_y))
         screen.blit(label_astar, (grid2_x, grid_bottom_y))
 
-        # Tlacitka SPUSTIT a RESET
-        button_spustit.draw()
-        button_reset_s2.draw()
-
+        for button in buttons_to_print:
+            button.draw()
+       
         pygame.display.update()
-    return "MENU"
+    return scene
