@@ -254,6 +254,37 @@ def run_scene_2(screen):
 
     starting_node_1, end_node_1, starting_node_2, end_node_2 = newGame()
 
+    # pocitani pruchodu
+    bfs_pruchody = 0
+    astar_pruchody = 0
+
+    font_counter = pygame.font.SysFont('Arial', 22)
+
+    # Tlacitka SPUSTIT a RESET pod mrizkami
+    grid_bottom_y = padding_top + GRID_HEIGHT * node_size + 15
+    total_grid_width = GRID_WIDTH * node_size
+    button_spustit_x = grid1_x + (total_grid_width - 160) // 2
+    button_reset_x = grid2_x + (total_grid_width - 160) // 2
+    
+    button_spustit = Button(screen, 0, 0, START_BUTTON_COLOR, button_spustit_x, grid_bottom_y + 35, 160, 45, None, "SPUSTIT")
+    button_reset_s2 = Button(screen, 0, 0, RESET_BUTTON_COLOR, button_reset_x, grid_bottom_y + 35, 160, 45, None, "RESET")
+
+    def run_algorithms():
+        nonlocal bfs_pruchody, astar_pruchody
+        algs1.BFS(starting_node_1, end_node_1, "compare")
+        algs2.ASTAR(starting_node_2, end_node_2, "compare")
+        # Pocitame nody ktere maji nastavenou vzdalenost (text) - tedy byly navstiveny
+        bfs_pruchody = sum(1 for row in node_matrix_1 for b in row if b.text != "")
+        astar_pruchody = sum(1 for row in node_matrix_2 for b in row if b.text != "")
+    
+    def reset_scene():
+        nonlocal starting_node_1, end_node_1, starting_node_2, end_node_2, bfs_pruchody, astar_pruchody
+        starting_node_1, end_node_1, starting_node_2, end_node_2 = newGame()
+        algs1.resetAlg()
+        algs2.resetAlg()
+        bfs_pruchody = 0
+        astar_pruchody = 0
+        
     running = True
     while running:
         for event in pygame.event.get():
@@ -261,60 +292,60 @@ def run_scene_2(screen):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE: return "MENU"
                 if event.key == pygame.K_1: return "LEVEL1"
-                
                 if event.key == pygame.K_l:
-                    # starting_node_1, end_node_1, starting_node_2, end_node_2 = newGame()
-                    algs1.BFS(starting_node_1, end_node_1, "compare")
-                    algs2.ASTAR(starting_node_2, end_node_2, "compare")
+                    run_algorithms()
 
                 if event.key == pygame.K_r:
-                    starting_node_1, end_node_1, starting_node_2, end_node_2 = newGame()
-                    algs1.resetAlg()
-                    algs2.resetAlg()
+                    reset_scene()
 
             if event.type == pygame.MOUSEBUTTONDOWN:
-                # Loop pro prvni grid
-                for row in node_matrix_1:
-                    for button in row:
-                        if button.is_clicked(event):
-                            # chci synchronizovat nastaveni zdi (cervene barvy) aby oba dva meli stejne prostredi
-                            row_button = button.row
-                            col_button = button.col
-                            button_matrix_2 = node_matrix_2[row_button][col_button]
-                            if button.type == 1:
-                                button.color = AVAILABLE_COLUMN_COLOR 
-                                button.type = 0
-                                
-                                button_matrix_2.color = AVAILABLE_COLUMN_COLOR 
-                                button_matrix_2.type = 0
-                            elif button.type == 0 and button != starting_node_1 and button!=end_node_1:
-                                button.color = WALL_COLOR 
-                                button.type = 1 
-                                
-                                button_matrix_2.color = WALL_COLOR 
-                                button_matrix_2.type = 1 
-                            button.print()
-                
-                # Loop pro druhy grid
-                for row in node_matrix_2:
-                    for button in row:
-                        if button.is_clicked(event):
-                            row_button = button.row
-                            col_button = button.col
-                            button_matrix_1 = node_matrix_1[row_button][col_button]
-                            if button.type == 1:
-                                button.color = AVAILABLE_COLUMN_COLOR 
-                                button.type = 0
+                if button_spustit.is_clicked(event):
+                    run_algorithms()
+                elif button_reset_s2.is_clicked(event):
+                    reset_scene()
+                else:
+                    # Loop pro prvni grid
+                    for row in node_matrix_1:
+                        for button in row:
+                            if button.is_clicked(event):
+                                # chci synchronizovat nastaveni zdi (cervene barvy) aby oba dva meli stejne prostredi
+                                row_button = button.row
+                                col_button = button.col
+                                button_matrix_2 = node_matrix_2[row_button][col_button]
+                                if button.type == 1:
+                                    button.color = AVAILABLE_COLUMN_COLOR 
+                                    button.type = 0
+                                    
+                                    button_matrix_2.color = AVAILABLE_COLUMN_COLOR 
+                                    button_matrix_2.type = 0
+                                elif button.type == 0 and button != starting_node_1 and button!=end_node_1:
+                                    button.color = WALL_COLOR 
+                                    button.type = 1 
+                                    
+                                    button_matrix_2.color = WALL_COLOR 
+                                    button_matrix_2.type = 1 
+                                button.print()
+                    
+                    # Loop pro druhy grid
+                    for row in node_matrix_2:
+                        for button in row:
+                            if button.is_clicked(event):
+                                row_button = button.row
+                                col_button = button.col
+                                button_matrix_1 = node_matrix_1[row_button][col_button]
+                                if button.type == 1:
+                                    button.color = AVAILABLE_COLUMN_COLOR 
+                                    button.type = 0
 
-                                button_matrix_1.color = AVAILABLE_COLUMN_COLOR 
-                                button_matrix_1.type = 0
-                            elif button.type == 0 and button != starting_node_2 and button!=end_node_2:
-                                button.color = WALL_COLOR 
-                                button.type = 1 
+                                    button_matrix_1.color = AVAILABLE_COLUMN_COLOR 
+                                    button_matrix_1.type = 0
+                                elif button.type == 0 and button != starting_node_2 and button!=end_node_2:
+                                    button.color = WALL_COLOR 
+                                    button.type = 1 
 
-                                button_matrix_1.color = WALL_COLOR 
-                                button_matrix_1.type = 1 
-                            button.print()
+                                    button_matrix_1.color = WALL_COLOR 
+                                    button_matrix_1.type = 1 
+                                button.print()
 
         screen.fill(BACKGROUND_COLOR)
         # nadpisy mrizek
@@ -328,6 +359,16 @@ def run_scene_2(screen):
         for row in node_matrix_2:
             for button in row:
                 button.draw()
+
+        # Labely s poctem navstivenych nodu pod kazdou mrizkou
+        label_bfs = font_counter.render(f"Navštíveno nodů: {bfs_pruchody}", True, HEADER_SCENE2_COLOR)
+        label_astar = font_counter.render(f"Navštíveno nodů: {astar_pruchody}", True, HEADER_SCENE2_COLOR)
+        screen.blit(label_bfs, (grid1_x, grid_bottom_y))
+        screen.blit(label_astar, (grid2_x, grid_bottom_y))
+
+        # Tlacitka SPUSTIT a RESET
+        button_spustit.draw()
+        button_reset_s2.draw()
 
         pygame.display.update()
     return "MENU"
