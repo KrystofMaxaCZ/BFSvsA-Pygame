@@ -95,7 +95,7 @@ def run_scene_1(screen):
     button_reset = Button(screen, 0, 0, RESET_BUTTON_COLOR, menu_x, start_y + 3*(button_h + space),  button_w, button_h, None, "RESET")
     button_reset_alg = Button(screen, 0, 0, RESET_ALGO_COLOR, menu_x, start_y + 4*(button_h + space),  button_w, button_h, None, "RESET_ALG")
 
-    button_setup_start_end = Button(screen, 0, 0, BUTTON_START_END_COLOR, offset_x, offset_y - button_h -10,  button_w + 30, button_h, None, "SETUP START/END")
+    button_setup_start_end = Button(screen, 0, 0, BUTTON_START_END_COLOR, 0, 0,  200, button_h, None, "SETUP START/END")
 
     button_switch_scene = Button(screen, 0, 0, SWITCH_SCENE_COLOR, screen_width//2 - 50, 0, 100, 45, None, "SCENE 2")
 
