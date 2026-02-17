@@ -15,7 +15,7 @@ Program se spustí příkazem: `python JMENO_HLAVNIHO_SOUBORU.py`
 ## Dokumentace
 
 *Tady bude rozcestník k dokumentaci k vašemu programu. Pokud je to potřeba, upravte odkazy na soubory s dokumentací. Nebo pokud nepíšete dokumentaci v Markdownu, tak sem napište, kde dokumentaci najdu.*
-
-* [Uživatelská dokumentace](docs/user.md)
+* [Úvod](./docs/uvod.md)
+* [Uživatelská dokumentace](docs/uzivatelskaPrirucka.md)
 * [Ukázky použití](docs/examples.md)
-* [Programátorská dokumentace](docs/programmer.md)
+* [Programátorská dokumentace](docs/programatorskaDokumentace.md)
