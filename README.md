@@ -1,20 +1,18 @@
-# Zápočtový program
+# Nalezení nejkratší cesty v poli a porovnání algoritmů BFS vs A*
 
-*Tento soubor vhodně upravte. Text psaný kurzívou označuje instrukce pro vás, před odevzdáním ho smažte.*
+**Autor:** [Kryštof Maxa]  
+**Rok:** 2025/2026  
+**Předmět:** Programování 1 (Zápočtový projekt)
 
-## Specifikace
+## O aplikaci
+Tato aplikace slouží k interaktivní vizualizaci algoritmů BFS a A*. Dále k porovnání průběhu obou algoritmů. 
 
-*Sem napište stručnou specifikaci vašeho programu - co váš program dělá (podobně, jako jste mi psali do mailu). Stačí zhruba 1 odstavec.*
+## Použité technologie
+* Aplikace je naprogramovaná v jazyce [**Python**](https://www.python.org/), verze 3.12.
+* Aplikace používá knihovnu [**Pygame**](https://www.pygame.org/news).
+* Pro tvorbu uživatelského rozhraní a menu byla použita knihovna [**Pygame-menu**](https://pygame-menu.readthedocs.io/en/latest/). 
 
-## Instalace a spuštění
-
-*Pokud je váš program v Pythonu, stačí upravit JMENO_HLAVNIHO_SOUBORU níže a případně doplnit další informace ke spuštění (jestli má nějaké parametry, vstupní soubory, ...). Pokud je parametrů hodně nebo je potřeba nějaký speciální formát vstupních souborů, nechte tuto sekci jen stručnou a podrobněji to popište v uživatelské dokumentaci (a sem dejte odkaz). Pokud je program v jiném programovacím jazyce, tuto sekci vhodně upravte, abych byl při kontrole schopen nainstalovat si potřebné nástroje a program spustit.*
-
-Program se spustí příkazem: `python JMENO_HLAVNIHO_SOUBORU.py`
-
-## Dokumentace
-
-*Tady bude rozcestník k dokumentaci k vašemu programu. Pokud je to potřeba, upravte odkazy na soubory s dokumentací. Nebo pokud nepíšete dokumentaci v Markdownu, tak sem napište, kde dokumentaci najdu.*
+## Rozcestník
 * [Úvod](./docs/uvod.md)
 * [Uživatelská dokumentace](docs/uzivatelskaPrirucka.md)
 * [Ukázky použití](docs/examples.md)
