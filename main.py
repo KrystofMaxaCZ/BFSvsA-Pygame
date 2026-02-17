@@ -9,7 +9,7 @@ def main():
     pygame.init()
     menu = MenuScene()
     # Set up the game window
-    resolution = (1000, 700)
+    resolution = (WINDOW_WIDTH, WINDOW_HEIGHT)
     screen = pygame.display.set_mode(resolution)
     pygame.display.set_caption("Labyrinth")
 
