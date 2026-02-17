@@ -12,6 +12,29 @@ def run_scene_1(screen):
     # objekt pro algorimty 
     algs = Algorithms(node_matrix)
         
+    # Zlepseni responzivity a vizualni stranky 
+    screen_width, screen_height = screen.get_size()
+
+    # prostor pro menu
+    menu_panel_width = 200
+    padding = 40
+    
+    # prostor pro mrizku
+    available_width = screen_width - menu_panel_width - (2 * padding)
+    available_height = screen_height - (2 * padding)
+    
+    """    
+    button = Button(screen,y,x,BOARDER_COLOR, 200 + x * 35, 200 + y * 35, 33, 33, 2)
+    predtim, ted dynamicky  screen,y,x,BOARDER_COLOR, ...
+    """
+
+    calculated_size = min(available_width // GRID_WIDTH, available_height // GRID_HEIGHT)
+    
+    node_size = min(calculated_size, MAX_NODE_SIZE)
+    offset_x = padding + (available_width - (node_size * GRID_WIDTH)) // 2
+    offset_y = padding + (available_height - (node_size * GRID_HEIGHT)) // 2
+
+
     # Vyroba policek pomoci objektu Button
     def prepare2DGrid():
         """
@@ -23,20 +46,25 @@ def run_scene_1(screen):
             - v row jsou samotne prvky buttons
             - v node_matric jsou ulozene listy row
         """
-        for y in range(POLE_HEIGHT):
+        for y in range(GRID_HEIGHT):
             row = []
-            for x in range(POLE_WIDTH):
+            for x in range(GRID_WIDTH):
+                # pozici mrizky budeme pocitat dynamicky
+                pos_x = offset_x + x * node_size
+                pos_y = offset_y + y * node_size
+                button_size = node_size - 2
+
                 # border - vyroba okraje pole
-                if (x == 0) or (x == (POLE_WIDTH - 1)) or (y == 0) or (y==(POLE_HEIGHT - 1)):
-                    button = Button(screen,y,x,BOARDER_COLOR, 200 + x * 35, 200 + y * 35, 33, 33, 2)
+                if (x == 0) or (x == (GRID_WIDTH - 1)) or (y == 0) or (y==(GRID_HEIGHT - 1)):
+                    button = Button(screen,y,x,BOARDER_COLOR, pos_x, pos_y, button_size,button_size, 2)
                     row.append(button)
                 # starting and end
-                elif (x==1 and y==1) or (x==(POLE_WIDTH-2) and y==(POLE_HEIGHT-2)):
-                    button = Button(screen,y,x, STARTING_NODE_COLOR, 200 + x * 35, 200 + y * 35, 33, 33, 0)
+                elif (x==1 and y==1) or (x==(GRID_WIDTH-2) and y==(GRID_HEIGHT-2)):
+                    button = Button(screen,y,x, STARTING_NODE_COLOR, pos_x, pos_y, button_size,button_size, 0)
                     row.append(button)
                 # free space - zelene policka volna 
                 else:
-                    button = Button(screen,y,x, AVAILABLE_COLUMN_COLOR, 200 + x * 35, 200 + y * 35, 33, 33, 0)
+                    button = Button(screen,y,x, AVAILABLE_COLUMN_COLOR, pos_x, pos_y, button_size,button_size, 0)
                     row.append(button)
             node_matrix.append(row)
                 
@@ -46,16 +74,24 @@ def run_scene_1(screen):
         node_matrix.clear()
         prepare2DGrid()
         starting_node = node_matrix[1][1]
-        end_node = node_matrix[POLE_HEIGHT-2][POLE_WIDTH-2]
+        end_node = node_matrix[GRID_HEIGHT-2][GRID_WIDTH-2]
 
         return starting_node, end_node
 
     
-    button_bfs = Button(screen, 0, 0, ACTIVE_COLOR, 700, 100, 90, 50, None, "BFS")
-    button_astar = Button(screen, 0, 0, NOTACTIVE_COLOR, 700, 170, 90, 50, None, "A*")
-    button_start = Button(screen, 0, 0, START_BUTTON_COLOR, 700, 240, 90, 50, None, "SPUSTIT")
-    button_reset = Button(screen, 0, 0, RESET_BUTTON_COLOR, 700, 310, 90, 50, None, "RESET")
-    button_reset_alg = Button(screen, 0, 0, RESET_ALGO_COLOR, 700, 380, 90, 50, None, "RESET_ALG")
+    # UI pro ovladani aplikace algoritmu
+    menu_x = screen_width - menu_panel_width + 20 
+    start_y = 100
+    button_w = 160 
+    button_h = 45
+    space = 15 
+    
+
+    button_bfs = Button(screen, 0, 0, ACTIVE_COLOR, menu_x, start_y, button_w, button_h, None, "BFS")
+    button_astar = Button(screen, 0, 0, NOTACTIVE_COLOR, menu_x, start_y + (button_h + space),  button_w, button_h, None, "A*")
+    button_start = Button(screen, 0, 0, START_BUTTON_COLOR, menu_x, start_y + 2*(button_h + space),  button_w, button_h, None, "SPUSTIT")
+    button_reset = Button(screen, 0, 0, RESET_BUTTON_COLOR, menu_x, start_y + 3*(button_h + space),  button_w, button_h, None, "RESET")
+    button_reset_alg = Button(screen, 0, 0, RESET_ALGO_COLOR, menu_x, start_y + 4*(button_h + space),  button_w, button_h, None, "RESET_ALG")
 
     menu_buttons = [button_bfs, button_astar, button_start, button_reset, button_reset_alg]
 
@@ -133,38 +169,69 @@ def run_scene_2(screen):
         A pak synchronizaci nastavovani zdi v poli
     """
 
-    node_matrix_1 = [] 
-    node_matrix_2 = [] 
+    
+    # opet responzivita UI menu a gridu
+    screen_width, screen_height = screen.get_size()
+
+
+    # priprava rozmeru ohraniceni mrizek
+    padding_sides = 50
+    padding_top = 120
+    gap_between_grids = 60 # Mezera mezi BFS a A*
+
+    # mozne misto pro mrizku
+    available_width_per_grid = (screen_width - (2 * padding_sides) - gap_between_grids) // 2 
+    available_height = screen_height - padding_top - 50
+    
+    # responzivni velikost node (buttonu). jednoho policka
+    calc_size = min(available_width_per_grid // GRID_WIDTH, available_height // GRID_HEIGHT)
+    node_size = min(calc_size, MAX_NODE_SIZE)
+    btn_size = node_size - 4 
+    
+    total_width = (GRID_WIDTH * node_size * 2) + gap_between_grids    
+    grid1_x = (screen_width - total_width) // 2 #zacatek prvni mrizky
+    grid2_x = grid1_x + (GRID_WIDTH * node_size) + gap_between_grids #zacatek druhe mrizkyy
+
+    # Font pro nadpisy
+    font_header = pygame.font.SysFont('Arial', 32, bold=True)
+    text_bfs = font_header.render("BFS Algorithm", True, HEADER_SCENE2_COLOR)
+    text_astar = font_header.render("A* Algorithm", True, HEADER_SCENE2_COLOR)
+
+    node_matrix_1 = [] #mrizka 1 BFS
+    node_matrix_2 = [] #mrizka 2 ASTAR
     
     algs1 = Algorithms(node_matrix_1)
     algs2 = Algorithms(node_matrix_2)
 
     def prepare2DGrid():
-        grid1_start_x = 50
-        grid_width = POLE_WIDTH * 35
-        gap = 50
-        grid2_start_x = grid1_start_x + grid_width + gap
-
-        for y in range(POLE_HEIGHT):
+        for y in range(GRID_HEIGHT):
             row1 = []
             row2 = []
-            for x in range(POLE_WIDTH):
-                # Grid 1 logic
-                if (x == 0) or (x == (POLE_WIDTH - 1)) or (y == 0) or (y==(POLE_HEIGHT - 1)):
-                    button1 = Button(screen,y,x,BOARDER_COLOR, grid1_start_x + x * 35, 200 + y * 35, 33, 33, 2)
-                    btn2 = Button(screen,y,x,BOARDER_COLOR, grid2_start_x + x * 35, 200 + y * 35, 33, 33, 2)
+            
+            for x in range(GRID_WIDTH):
+                # pozice prvni mrizky
+                p1_x = grid1_x + x * node_size
+                p1_y = padding_top + y * node_size
+
+                # pozice druhe mrizky
+                p2_x = grid2_x + x * node_size
+                p2_y = padding_top + y * node_size
+
+                if (x == 0) or (x == (GRID_WIDTH - 1)) or (y == 0) or (y==(GRID_HEIGHT - 1)):
+                    button1 = Button(screen,y,x,BOARDER_COLOR, p1_x, p1_y, btn_size, btn_size, 2)
+                    button2 = Button(screen,y,x,BOARDER_COLOR, p2_x, p2_y, btn_size, btn_size, 2)
                     row1.append(button1)
-                    row2.append(btn2)
-                elif (x==1 and y==1) or (x==(POLE_WIDTH-2) and y==(POLE_HEIGHT-2)):
-                    button1 = Button(screen,y,x, STARTING_NODE_COLOR, grid1_start_x + x * 35, 200 + y * 35, 33, 33, 0)
-                    btn2 = Button(screen,y,x, STARTING_NODE_COLOR, grid2_start_x + x * 35, 200 + y * 35, 33, 33, 0)
+                    row2.append(button2)
+                elif (x==1 and y==1) or (x==(GRID_WIDTH-2) and y==(GRID_HEIGHT-2)):
+                    button1 = Button(screen,y,x, STARTING_NODE_COLOR, p1_x, p1_y, btn_size, btn_size, 0)
+                    button2 = Button(screen,y,x, STARTING_NODE_COLOR, p2_x, p2_y, btn_size, btn_size, 0)
                     row1.append(button1)
-                    row2.append(btn2)
+                    row2.append(button2)
                 else:
-                    button1 = Button(screen,y,x, AVAILABLE_COLUMN_COLOR, grid1_start_x + x * 35, 200 + y * 35, 33, 33, 0)
-                    btn2 = Button(screen,y,x, AVAILABLE_COLUMN_COLOR, grid2_start_x + x * 35, 200 + y * 35, 33, 33, 0)
+                    button1 = Button(screen,y,x, AVAILABLE_COLUMN_COLOR, p1_x, p1_y, btn_size, btn_size, 0)
+                    button2 = Button(screen,y,x, AVAILABLE_COLUMN_COLOR, p2_x, p2_y, btn_size, btn_size, 0)
                     row1.append(button1)
-                    row2.append(btn2)
+                    row2.append(button2)
             
             node_matrix_1.append(row1)
             node_matrix_2.append(row2)
@@ -177,12 +244,13 @@ def run_scene_2(screen):
         prepare2DGrid()
         
         starting_node_1 = node_matrix_1[1][1]
-        end_node_1 = node_matrix_1[POLE_HEIGHT-2][POLE_WIDTH-2]
+        end_node_1 = node_matrix_1[GRID_HEIGHT-2][GRID_WIDTH-2]
 
         starting_node_2 = node_matrix_2[1][1]
-        end_node_2 = node_matrix_2[POLE_HEIGHT-2][POLE_WIDTH-2]
+        end_node_2 = node_matrix_2[GRID_HEIGHT-2][GRID_WIDTH-2]
 
         return starting_node_1, end_node_1, starting_node_2, end_node_2
+
 
     starting_node_1, end_node_1, starting_node_2, end_node_2 = newGame()
 
@@ -249,7 +317,10 @@ def run_scene_2(screen):
                             button.print()
 
         screen.fill(BACKGROUND_COLOR)
-        
+        # nadpisy mrizek
+        screen.blit(text_bfs, (grid1_x, padding_top - 50))
+        screen.blit(text_astar, (grid2_x, padding_top - 50))
+
         for row in node_matrix_1:
             for button in row:
                 button.draw()

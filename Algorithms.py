@@ -109,7 +109,7 @@ class Algorithms:
                         neighbour_node.distance = node.distance + 1
                         neighbour_node.type = 10
                         queue.append(neighbour_node)
-                if (row + 1) < POLE_HEIGHT:
+                if (row + 1) < GRID_HEIGHT:
                     neighbour_node = self.node_matrix[row + 1][col]
                     if neighbour_node.type == 0:
                         neighbour_node.predecessor = node
@@ -123,7 +123,7 @@ class Algorithms:
                         neighbour_node.distance = node.distance + 1
                         neighbour_node.type = 10
                         queue.append(neighbour_node)
-                if (col + 1) < POLE_WIDTH:
+                if (col + 1) < GRID_WIDTH:
                     neighbour_node = self.node_matrix[row][col + 1]
                     if neighbour_node.type == 0:
                         neighbour_node.predecessor = node
@@ -188,7 +188,7 @@ class Algorithms:
                         neighbour_node_score = self.nodeScore(neighbour_node, end_node)
 
                         pqueue.put((neighbour_node_score, neighbour_node))
-                if (row + 1) < POLE_HEIGHT:
+                if (row + 1) < GRID_HEIGHT:
                     neighbour_node = self.node_matrix[row + 1][col]
                     if neighbour_node.type == 0:
                         neighbour_node.predecessor = node
@@ -204,7 +204,7 @@ class Algorithms:
                         neighbour_node_score = self.nodeScore(neighbour_node, end_node)
 
                         pqueue.put((neighbour_node_score, neighbour_node))
-                if (col + 1) < POLE_WIDTH:
+                if (col + 1) < GRID_WIDTH:
                     neighbour_node = self.node_matrix[row][col + 1]
                     if neighbour_node.type == 0:
                         neighbour_node.predecessor = node
