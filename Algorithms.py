@@ -11,6 +11,7 @@ class Algorithms:
     def resetAlg(self):
         for row in self.node_matrix:
             for button in row:
+                button.text = ""
                 if button.color == AVAILABLE_COLUMN_COLOR or button.color == WAY_COLOR:
                     button.type = 0
                     button.distance = 0
@@ -71,6 +72,7 @@ class Algorithms:
         self.resetAlg()
         queue = deque()
         starting_node.distance = 0
+        starting_node.type = 10
         queue.append(starting_node)
         # indexy v 2D poli
         row = starting_node.row
@@ -150,6 +152,7 @@ class Algorithms:
 
         pqueue = PriorityQueue()
         starting_node.distance = 0
+        starting_node.type = 10
         pqueue.put((0, starting_node))
         # indexy v 2D poli
         row = starting_node.row

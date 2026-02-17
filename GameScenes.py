@@ -270,7 +270,8 @@ def run_scene_2(screen):
     button_reset_s2 = Button(screen, 0, 0, RESET_BUTTON_COLOR, button_reset_x, grid_bottom_y + 35, 160, 45, None, "RESET")
 
     def run_algorithms():
-        nonlocal bfs_pruchody, astar_pruchody
+        nonlocal bfs_pruchody, astar_pruchody, starting_node_1, end_node_1, starting_node_2, end_node_2
+ 
         algs1.BFS(starting_node_1, end_node_1, "compare")
         algs2.ASTAR(starting_node_2, end_node_2, "compare")
         # Pocitame nody ktere maji nastavenou vzdalenost (text) - tedy byly navstiveny
@@ -284,7 +285,9 @@ def run_scene_2(screen):
         algs2.resetAlg()
         bfs_pruchody = 0
         astar_pruchody = 0
-        
+
+    select_mode = "create_grid"
+    selecting_node = "starting"
     running = True
     while running:
         for event in pygame.event.get():
@@ -297,55 +300,136 @@ def run_scene_2(screen):
 
                 if event.key == pygame.K_r:
                     reset_scene()
+                if event.key == pygame.K_s:
+                    # vyberu start
+                    # zjistim na jaky node jsem kliknul
+                    # prebarvim ho na zlutou a nastavim starting_node na tento button
+                    # zjistim na jaky node jsem kliknul
+                    # prebarvim ho na zlutou a nastavim end_node na tento button
+                    # if event.type == pygame.MOUSEBUTTONDOWN:
+                    #     for row in node_matrix_1:
+                    #         for button in row:
+                    #             if button.is_clicked(event):
+                    #                 starting_node_1 = button
+                    #                 starting_node_2 = button
+                    # if event.type == pygame.MOUSEBUTTONDOWN:
+                    #     for row in node_matrix_1:
+                    #         for button in row:
+                    #             if button.is_clicked(event):
+                    #                 end_node_1 = button
+                    #                 end_node_2 = button
 
+                    select_mode = "start_end"
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if button_spustit.is_clicked(event):
                     run_algorithms()
                 elif button_reset_s2.is_clicked(event):
                     reset_scene()
                 else:
-                    # Loop pro prvni grid
-                    for row in node_matrix_1:
-                        for button in row:
-                            if button.is_clicked(event):
-                                # chci synchronizovat nastaveni zdi (cervene barvy) aby oba dva meli stejne prostredi
-                                row_button = button.row
-                                col_button = button.col
-                                button_matrix_2 = node_matrix_2[row_button][col_button]
-                                if button.type == 1:
-                                    button.color = AVAILABLE_COLUMN_COLOR 
-                                    button.type = 0
-                                    
-                                    button_matrix_2.color = AVAILABLE_COLUMN_COLOR 
-                                    button_matrix_2.type = 0
-                                elif button.type == 0 and button != starting_node_1 and button!=end_node_1:
-                                    button.color = WALL_COLOR 
-                                    button.type = 1 
-                                    
-                                    button_matrix_2.color = WALL_COLOR 
-                                    button_matrix_2.type = 1 
-                                button.print()
-                    
-                    # Loop pro druhy grid
-                    for row in node_matrix_2:
-                        for button in row:
-                            if button.is_clicked(event):
-                                row_button = button.row
-                                col_button = button.col
-                                button_matrix_1 = node_matrix_1[row_button][col_button]
-                                if button.type == 1:
-                                    button.color = AVAILABLE_COLUMN_COLOR 
-                                    button.type = 0
+                    if select_mode == "start_end":
+                        if selecting_node == "starting":
+                            for row in node_matrix_1:
+                                for button in row:
+                                    if button.is_clicked(event):
+                                        starting_node_1.color = AVAILABLE_COLUMN_COLOR  # stary start zpet na zelenou
+                                        starting_node_2.color = AVAILABLE_COLUMN_COLOR
+                                        starting_node_1 = button                         # novy start
+                                        starting_node_2 = node_matrix_2[button.row][button.col]
+                                        starting_node_1.color = STARTING_NODE_COLOR            # prebarvit na zlutou
+                                        starting_node_2.color = STARTING_NODE_COLOR
 
-                                    button_matrix_1.color = AVAILABLE_COLUMN_COLOR 
-                                    button_matrix_1.type = 0
-                                elif button.type == 0 and button != starting_node_2 and button!=end_node_2:
-                                    button.color = WALL_COLOR 
-                                    button.type = 1 
+                                        starting_node_1.text = ""   
+                                        starting_node_2.text = ""
+                                        selecting_node = "ending"
+                            for row in node_matrix_2:
+                                for button in row:
+                                    if button.is_clicked(event):
+                                        starting_node_1.color = AVAILABLE_COLUMN_COLOR  # stary start zpet na zelenou
+                                        starting_node_2.color = AVAILABLE_COLUMN_COLOR
+                                        starting_node_1 = node_matrix_1[button.row][button.col] # novy start
+                                        starting_node_2 = button 
+                                        starting_node_1.color = STARTING_NODE_COLOR            # prebarvit na zlutou
+                                        starting_node_2.color = STARTING_NODE_COLOR
 
-                                    button_matrix_1.color = WALL_COLOR 
-                                    button_matrix_1.type = 1 
-                                button.print()
+                                        
+                                        starting_node_1.text = ""   
+                                        starting_node_2.text = ""
+
+                                        selecting_node = "ending"
+                                
+                        else:
+                            for row in node_matrix_1:
+                                for button in row:
+                                    if button.is_clicked(event):
+                                        end_node_1.color = AVAILABLE_COLUMN_COLOR  # stary cil zpet na zelenou
+                                        end_node_2.color = AVAILABLE_COLUMN_COLOR
+                                        end_node_1 = button # novy cil
+                                        end_node_2 = node_matrix_2[button.row][button.col] 
+                                        end_node_1.color = STARTING_NODE_COLOR           # prebarvit na zlutou
+                                        end_node_2.color = STARTING_NODE_COLOR
+
+                                        end_node_1.text = ""   
+                                        end_node_2.text = ""
+                                        selecting_node = "starting"
+                                        select_mode = "create_grid"
+                                        
+                            for row in node_matrix_2:
+                                for button in row:
+                                    if button.is_clicked(event):
+                                        end_node_1.color = AVAILABLE_COLUMN_COLOR  # stary cil zpet na zelenou
+                                        end_node_2.color = AVAILABLE_COLUMN_COLOR
+                                        end_node_1 = node_matrix_1[button.row][button.col]  # novy cil
+                                        end_node_2 = button 
+                                        end_node_1.color = STARTING_NODE_COLOR           # prebarvit na zlutou
+                                        end_node_2.color = STARTING_NODE_COLOR
+
+                                        end_node_1.text = ""   
+                                        end_node_2.text = ""
+                                    selecting_node = "starting"
+                                    select_mode = "create_grid"
+                    else:
+                        # Loop pro prvni grid
+                        for row in node_matrix_1:
+                            for button in row:
+                                if button.is_clicked(event):
+                                    # chci synchronizovat nastaveni zdi (cervene barvy) aby oba dva meli stejne prostredi
+                                    row_button = button.row
+                                    col_button = button.col
+                                    button_matrix_2 = node_matrix_2[row_button][col_button]
+                                    if button.type == 1:
+                                        button.color = AVAILABLE_COLUMN_COLOR 
+                                        button.type = 0
+                                        
+                                        button_matrix_2.color = AVAILABLE_COLUMN_COLOR 
+                                        button_matrix_2.type = 0
+                                    elif button.type == 0 and button != starting_node_1 and button!=end_node_1:
+                                        button.color = WALL_COLOR 
+                                        button.type = 1 
+                                        
+                                        button_matrix_2.color = WALL_COLOR 
+                                        button_matrix_2.type = 1 
+                                    button.print()
+                        
+                        # Loop pro druhy grid
+                        for row in node_matrix_2:
+                            for button in row:
+                                if button.is_clicked(event):
+                                    row_button = button.row
+                                    col_button = button.col
+                                    button_matrix_1 = node_matrix_1[row_button][col_button]
+                                    if button.type == 1:
+                                        button.color = AVAILABLE_COLUMN_COLOR 
+                                        button.type = 0
+
+                                        button_matrix_1.color = AVAILABLE_COLUMN_COLOR 
+                                        button_matrix_1.type = 0
+                                    elif button.type == 0 and button != starting_node_2 and button!=end_node_2:
+                                        button.color = WALL_COLOR 
+                                        button.type = 1 
+
+                                        button_matrix_1.color = WALL_COLOR 
+                                        button_matrix_1.type = 1 
+                                    button.print()
 
         screen.fill(BACKGROUND_COLOR)
         # nadpisy mrizek
