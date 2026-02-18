@@ -7,8 +7,6 @@ from Algorithms import Algorithms
 from constants import *
 
 def run_scene_1(screen):
-    global GRID_WIDTH, GRID_HEIGHT
-
     node_matrix = [] # 2D pole, list kde jsou prvky listy obashujici objkety typu Button
     
     # objekt pro algorimty 
@@ -109,12 +107,6 @@ def run_scene_1(screen):
     select_mode = "create_grid"
     selecting_node = "starting"
 
-    input_width  = str(GRID_WIDTH)
-    input_height = str(GRID_HEIGHT)
-    active_input = None 
-    input_rect_w = pygame.Rect(menu_x, start_y + 6*(button_h + space), 75, button_h)
-    input_rect_h = pygame.Rect(menu_x + 85, start_y + 6*(button_h + space), 75, button_h)
-
     running = True
     while running:
         for event in pygame.event.get():
@@ -122,37 +114,6 @@ def run_scene_1(screen):
                 return "QUIT"
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE: return "MENU" 
-                
-                # Řádky 126 - 155 jsou vygenerované AI společně s 235-240
-                # --- OPRAVENÁ LOGIKA INPUTŮ ---
-                if active_input is not None:
-                    if event.key == pygame.K_RETURN:
-                        try:
-                            GRID_WIDTH  = max(5, int(input_width))
-                            GRID_HEIGHT = max(5, int(input_height))
-                            
-                            # Zde musíme znovu spustit tvůj výpočet, aby se mřížka přizpůsobila novým číslům
-                            calculated_size = min(available_width // GRID_WIDTH, available_height // GRID_HEIGHT)
-                            node_size = min(calculated_size, MAX_NODE_SIZE)
-                            offset_x = padding + (available_width - (node_size * GRID_WIDTH)) // 2
-                            offset_y = padding + (available_height - (node_size * GRID_HEIGHT)) // 2
-                            
-                            starting_node, end_node = newGame()
-                        except ValueError:
-                            pass
-                        active_input = None
-                    
-                    elif event.key == pygame.K_BACKSPACE:
-                        if active_input == "width":
-                            input_width = input_width[:-1]
-                        else:
-                            input_height = input_height[:-1]
-                    
-                    elif event.unicode.isdigit():
-                        if active_input == "width":
-                            input_width += event.unicode
-                        else:
-                            input_height += event.unicode
             # kdyz klikneme na talcitko tak se zmeni jeho barva
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if button_bfs.is_clicked(event):
@@ -182,10 +143,6 @@ def run_scene_1(screen):
                 elif button_setup_start_end.is_clicked(event):
                     select_mode = "start_end"
                     button_setup_start_end.color = (0,255,0)
-                elif input_rect_w.collidepoint(event.pos):
-                    active_input = "width"
-                elif input_rect_h.collidepoint(event.pos):
-                    active_input = "height"
                 else:
                     if select_mode == "start_end":
                         if selecting_node == "starting":
@@ -231,14 +188,6 @@ def run_scene_1(screen):
         
         for button in menu_buttons:
             button.draw()
-
-        # Řádky 126 - 155 jsou vygenerované AI společně s 235-240
-        font_input = pygame.font.SysFont('Arial', 18)
-        pygame.draw.rect(screen, (255,255,255) if active_input == "width"  else (200,200,200), input_rect_w)
-        pygame.draw.rect(screen, (255,255,255) if active_input == "height" else (200,200,200), input_rect_h)
-        screen.blit(font_input.render(f"W:{input_width}",  True, (0,0,0)), (input_rect_w.x + 4, input_rect_w.y + 10))
-        screen.blit(font_input.render(f"H:{input_height}", True, (0,0,0)), (input_rect_h.x + 4, input_rect_h.y + 10))
-
 
         pygame.display.update()
 
