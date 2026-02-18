@@ -111,10 +111,8 @@ Funkci `wayBack()` používám pro rekurzivní nalezení zpáteční cesty.
 ```python
 def wayBack(self, node: Button, starting_node):
     """
-    Rekurzivně najde cestu z end_node do starting_node a obarvuje ji.
-    
-    :param node: první zavolání je to end_node, další jsou to předchůdci, proto pojmenování pouze node
-    :param starting_node: uzel, ze kterého jsme začínali, tam chceme dorazit
+    Rekurzivne najde cestu z end_node do starting_node a obarvuje ji.
+    ...
     """
     if node.predecessor != starting_node:
         node.predecessor.color = WAY_COLOR
