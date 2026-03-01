@@ -1,6 +1,6 @@
 import pygame
 import pygame_menu
-from Button import Button
+from Node import Node
 from collections import deque
 from queue import PriorityQueue
 from Algorithms import Algorithms
@@ -56,15 +56,15 @@ def run_scene_1(screen):
 
                 # border - vyroba okraje pole
                 if (x == 0) or (x == (GRID_WIDTH - 1)) or (y == 0) or (y==(GRID_HEIGHT - 1)):
-                    button = Button(screen,y,x,BOARDER_COLOR, pos_x, pos_y, button_size,button_size, 2)
+                    button = Node(screen,y,x,BOARDER_COLOR, pos_x, pos_y, button_size,button_size, 2)
                     row.append(button)
                 # starting and end
                 elif (x==1 and y==1) or (x==(GRID_WIDTH-2) and y==(GRID_HEIGHT-2)):
-                    button = Button(screen,y,x, STARTING_NODE_COLOR, pos_x, pos_y, button_size,button_size, 0)
+                    button = Node(screen,y,x, STARTING_NODE_COLOR, pos_x, pos_y, button_size,button_size, 0)
                     row.append(button)
                 # free space - zelene policka volna 
                 else:
-                    button = Button(screen,y,x, AVAILABLE_COLUMN_COLOR, pos_x, pos_y, button_size,button_size, 0)
+                    button = Node(screen,y,x, AVAILABLE_COLUMN_COLOR, pos_x, pos_y, button_size,button_size, 0)
                     row.append(button)
             node_matrix.append(row)
                 
@@ -87,15 +87,15 @@ def run_scene_1(screen):
     space = 15 
     
 
-    button_bfs = Button(screen, 0, 0, ACTIVE_COLOR, menu_x, start_y, button_w, button_h, None, "BFS")
-    button_astar = Button(screen, 0, 0, NOTACTIVE_COLOR, menu_x, start_y + (button_h + space),  button_w, button_h, None, "A*")
-    button_start = Button(screen, 0, 0, START_BUTTON_COLOR, menu_x, start_y + 2*(button_h + space),  button_w, button_h, None, "SPUSTIT")
-    button_reset = Button(screen, 0, 0, RESET_BUTTON_COLOR, menu_x, start_y + 3*(button_h + space),  button_w, button_h, None, "RESET")
-    button_reset_alg = Button(screen, 0, 0, RESET_ALGO_COLOR, menu_x, start_y + 4*(button_h + space),  button_w, button_h, None, "RESET_ALG")
+    button_bfs = Node(screen, 0, 0, ACTIVE_COLOR, menu_x, start_y, button_w, button_h, None, "BFS")
+    button_astar = Node(screen, 0, 0, NOTACTIVE_COLOR, menu_x, start_y + (button_h + space),  button_w, button_h, None, "A*")
+    button_start = Node(screen, 0, 0, START_BUTTON_COLOR, menu_x, start_y + 2*(button_h + space),  button_w, button_h, None, "SPUSTIT")
+    button_reset = Node(screen, 0, 0, RESET_BUTTON_COLOR, menu_x, start_y + 3*(button_h + space),  button_w, button_h, None, "RESET")
+    button_reset_alg = Node(screen, 0, 0, RESET_ALGO_COLOR, menu_x, start_y + 4*(button_h + space),  button_w, button_h, None, "RESET_ALG")
 
-    button_setup_start_end = Button(screen, 0, 0, BUTTON_START_END_COLOR, 0, 0,  200, button_h, None, "SETUP START/END")
+    button_setup_start_end = Node(screen, 0, 0, BUTTON_START_END_COLOR, 0, 0,  200, button_h, None, "SETUP START/END")
 
-    button_switch_scene = Button(screen, 0, 0, SWITCH_SCENE_COLOR, screen_width//2 - 50, 0, 100, 45, None, "SCENE 2")
+    button_switch_scene = Node(screen, 0, 0, SWITCH_SCENE_COLOR, screen_width//2 - 50, 0, 100, 45, None, "SCENE 2")
 
     menu_buttons = [button_bfs, button_astar, button_start, button_reset, button_reset_alg, button_switch_scene,button_setup_start_end]
 
@@ -255,18 +255,18 @@ def run_scene_2(screen):
                 p2_y = padding_top + y * node_size
 
                 if (x == 0) or (x == (GRID_WIDTH - 1)) or (y == 0) or (y==(GRID_HEIGHT - 1)):
-                    button1 = Button(screen,y,x,BOARDER_COLOR, p1_x, p1_y, btn_size, btn_size, 2)
-                    button2 = Button(screen,y,x,BOARDER_COLOR, p2_x, p2_y, btn_size, btn_size, 2)
+                    button1 = Node(screen,y,x,BOARDER_COLOR, p1_x, p1_y, btn_size, btn_size, 2)
+                    button2 = Node(screen,y,x,BOARDER_COLOR, p2_x, p2_y, btn_size, btn_size, 2)
                     row1.append(button1)
                     row2.append(button2)
                 elif (x==1 and y==1) or (x==(GRID_WIDTH-2) and y==(GRID_HEIGHT-2)):
-                    button1 = Button(screen,y,x, STARTING_NODE_COLOR, p1_x, p1_y, btn_size, btn_size, 0)
-                    button2 = Button(screen,y,x, STARTING_NODE_COLOR, p2_x, p2_y, btn_size, btn_size, 0)
+                    button1 = Node(screen,y,x, STARTING_NODE_COLOR, p1_x, p1_y, btn_size, btn_size, 0)
+                    button2 = Node(screen,y,x, STARTING_NODE_COLOR, p2_x, p2_y, btn_size, btn_size, 0)
                     row1.append(button1)
                     row2.append(button2)
                 else:
-                    button1 = Button(screen,y,x, AVAILABLE_COLUMN_COLOR, p1_x, p1_y, btn_size, btn_size, 0)
-                    button2 = Button(screen,y,x, AVAILABLE_COLUMN_COLOR, p2_x, p2_y, btn_size, btn_size, 0)
+                    button1 = Node(screen,y,x, AVAILABLE_COLUMN_COLOR, p1_x, p1_y, btn_size, btn_size, 0)
+                    button2 = Node(screen,y,x, AVAILABLE_COLUMN_COLOR, p2_x, p2_y, btn_size, btn_size, 0)
                     row1.append(button1)
                     row2.append(button2)
             
@@ -303,10 +303,10 @@ def run_scene_2(screen):
     button_spustit_x = grid1_x + (total_grid_width - 160) // 2
     button_reset_x = grid2_x + (total_grid_width - 160) // 2
     
-    button_spustit = Button(screen, 0, 0, START_BUTTON_COLOR, button_spustit_x, grid_bottom_y + 35, 160, 45, None, "SPUSTIT")
-    button_reset_s2 = Button(screen, 0, 0, RESET_BUTTON_COLOR, button_reset_x, grid_bottom_y + 35, 160, 45, None, "RESET")
-    button_switch_scene = Button(screen, 0, 0, SWITCH_SCENE_COLOR, screen_width//2 - 50, 0, 100, 45, None, "SCENE 1")
-    button_setup_start_end = Button(screen, 0, 0, BUTTON_START_END_COLOR, 0, 0, 200, 45, None, "SETUP START/END")
+    button_spustit = Node(screen, 0, 0, START_BUTTON_COLOR, button_spustit_x, grid_bottom_y + 35, 160, 45, None, "SPUSTIT")
+    button_reset_s2 = Node(screen, 0, 0, RESET_BUTTON_COLOR, button_reset_x, grid_bottom_y + 35, 160, 45, None, "RESET")
+    button_switch_scene = Node(screen, 0, 0, SWITCH_SCENE_COLOR, screen_width//2 - 50, 0, 100, 45, None, "SCENE 1")
+    button_setup_start_end = Node(screen, 0, 0, BUTTON_START_END_COLOR, 0, 0, 200, 45, None, "SETUP START/END")
 
     buttons_to_print = [button_spustit, button_reset_s2, button_switch_scene, button_setup_start_end]
 

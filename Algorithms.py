@@ -1,6 +1,6 @@
 from collections import deque
 from constants import *
-from Button import Button
+from Node import Node
 from queue import PriorityQueue
 
 
@@ -27,7 +27,7 @@ class Algorithms:
                     button.distance = 0
                     button.predecessor = None
 
-    def wayBack(self, node: Button, starting_node):
+    def wayBack(self, node: Node, starting_node: Node):
         """
         Rekurzivne najde cestu z end_node do starting_node a obarvuje
         
@@ -38,7 +38,7 @@ class Algorithms:
             node.predecessor.color = WAY_COLOR
             self.wayBack(node.predecessor, starting_node)
         
-    def nodeScore(self, node, end_node) -> int:
+    def nodeScore(self, node: Node, end_node: Node) -> int:
         """
         Docstring for nodeScore
         
@@ -58,7 +58,7 @@ class Algorithms:
         score += node.distance
         return score
     
-    def BFS(self, starting_node, end_node, purpose):
+    def BFS(self, starting_node: Node, end_node: Node, purpose: str):
         """
         Najde nejkratsi cestu mezi starting_node a end_node
         
@@ -138,7 +138,7 @@ class Algorithms:
 
         print("BFS: Pocet navstivenych nodes = ", pocet_pruchodu)
 
-    def ASTAR(self, starting_node, end_node, purpose):
+    def ASTAR(self, starting_node: Node, end_node: Node, purpose: str):
         """
         Docstring for ASTAR
         velice podobne BFS
