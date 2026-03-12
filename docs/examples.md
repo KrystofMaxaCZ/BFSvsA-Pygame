@@ -41,53 +41,6 @@ Zajímavým poznatkem (ačkoliv docela logickým) je, že přidáním zdí vlast
 
 ## Scéna 2 - další zajímavý případ
 ![Scene25](./images/imageScena25.png)
-<!-- # Menu
-![Menu](./images/imageMenu.png)
-Takto vypada hlavni menu. Zde si uzivatel vybere scenu, kterou otevre.
-
-# Scena 1
-![Scena 1](./images/imageScena1.png)
-Scenu 1 tvori mrizka, tedy nas labyriny. Kliknutim na policko se zmeni jeho role viz. uzivatelska prirucka. Napravo jsou tlacitka na ovladani mrizky. Prvni dve slouzi ke zvoleni algoritmu, zvoleny algoritmus sviti zelenou barvou. Tlacitko spustit pote spusti algoritmus a zobrazi se nejkratsi cesta. Tlacitko reset pak resetuje celou mrizku a reset_alg pouze vymaze nalezenou cestu,  aby uzivatel nemusel znovu vytvaret zdi.
-
-Tlacitko SETUP START/END slouzi k nastaveni startovniho policka a ciloveho policka. Uzivatel klikne na tlacitko, tlacitko zmeni barvu, prvnim kliknutim nastavi startovni policko, druhym kliknutim nastavi cilove policko. 
-
-Tlacitko SCENE 2 nas presune na scenu s porovnanim algoritmu.
-
-## Scena 1 - nastaveni mrizky
-![Scene11](./images/imageScene11.png)
-Takto vypada mrizka po nastaveni zdi.
-## Scena 1 - zobrazeni nejkratsi cesty
-![Scene12](./images/imageScene12.png)
-Takto po nalezeni nejrkatsi cesty pomoci algoritmu A*.
-
-# Scena 2
-![Scene2](./images/imageScene2.png)
-Scenu 2 tvori tentokrat dve mrizky, ktere jsou rozeznatelne pomoci horniho nadpisu. Tato scena slouzi k porovnani, jak jednotlive algoritmy mrizky prochazi a jak se lisi. Tlacitka funguji stejne jako ve scene 1.
-
-## Scena 2 - nastaveni mrizky
-![Scene21](./images/imageScena21.png)
-
-## Scena 2 - zobrazeni porovnani
-![Scene22](./images/imageScena22.png)
-Zde vidime jak mrizka vypada pro porovnani algoritmu. Modra cesta znaci nejkratsi cestu. Cislo na policku znaci jak daleko je od startovniho policka. Kazde policko, ktere ma na sobe cislo bylo navstiveno. Takto nazorvne vidime, ktera policka algoritmus A* nenavstivi, narozdil od algoritmu BFS.
-Pod mrizkou je zobrazen pocet navstivenych policek pro kazdy z algoritmu.
-
-## Scena 2 - mrizka bez zdi
-![Scene23](./images/imageScena23.png)
-Priklad kdy v mrizce neni zadna zed.
-## Scena 2 - pocty pruchodu BFS a A* jsou shodne ?!
-![Scene26](./images/imageScena26.png)
-Pripad, kdy A* neni rychlejsi nez BFS
-## Scena 2 - cim vic zdi, tim mene pruchodu
-![Scene24](./images/imageScena24.png)
-Zajimavym poznatkem (ackoliv docela logickym) je, ze pridanim zdi vlastne zmensujeme pocet potencialnuch moznych policek k pruchodu, tedy pridanim zdi urychlujeme vypocet, coz dava smysl, jelikoz na to lze poglizet jako na nejake omezovani vyhledavaciho stromu.
-
-## Scena 2 - dalsi zajimavy pripad
-![Scene25](./images/imageScena25.png)
-
-
- -->
-
 
 ## Rozcestník
 * [Úvod](uvod.md)
