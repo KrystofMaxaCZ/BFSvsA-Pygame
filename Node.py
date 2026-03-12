@@ -39,6 +39,6 @@ class Node:
     # Tento kus kodu vygenerovala AI, reseni toho jak funguje prioritni fronta kdyz maji oba prvky stejne score
     def __lt__(self, other):
         # Tímto říkáš: "Je mi jedno, které tlačítko je dřív"
-        return False
+        return True
     def print(self):
         print(f"Button: row:{self.row}, col:{self.col}, color: {self.color}, type:{self.type}, text:{self.text}")

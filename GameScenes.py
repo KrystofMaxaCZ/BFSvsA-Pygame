@@ -59,8 +59,11 @@ def run_scene_1(screen):
                     button = Node(screen,y,x,BOARDER_COLOR, pos_x, pos_y, button_size,button_size, 2)
                     row.append(button)
                 # starting and end
-                elif (x==1 and y==1) or (x==(GRID_WIDTH-2) and y==(GRID_HEIGHT-2)):
+                elif (x==1 and y==1):
                     button = Node(screen,y,x, STARTING_NODE_COLOR, pos_x, pos_y, button_size,button_size, 0)
+                    row.append(button)
+                elif (x==(GRID_WIDTH-2) and y==(GRID_HEIGHT-2)):
+                    button = Node(screen,y,x, ENDING_NODE_COLOR, pos_x, pos_y, button_size,button_size, 0)
                     row.append(button)
                 # free space - zelene policka volna 
                 else:
@@ -126,7 +129,7 @@ def run_scene_1(screen):
                 if button.is_clicked(event):
                     end_node.color = AVAILABLE_COLUMN_COLOR  
                     end_node = button                        
-                    end_node.color = STARTING_NODE_COLOR     
+                    end_node.color = ENDING_NODE_COLOR     
 
                     end_node.text = ""   
                     selecting_node = "starting"
@@ -268,9 +271,14 @@ def run_scene_2(screen):
                     button2 = Node(screen,y,x,BOARDER_COLOR, p2_x, p2_y, btn_size, btn_size, 2)
                     row1.append(button1)
                     row2.append(button2)
-                elif (x==1 and y==1) or (x==(GRID_WIDTH-2) and y==(GRID_HEIGHT-2)):
+                elif (x==1 and y==1):
                     button1 = Node(screen,y,x, STARTING_NODE_COLOR, p1_x, p1_y, btn_size, btn_size, 0)
                     button2 = Node(screen,y,x, STARTING_NODE_COLOR, p2_x, p2_y, btn_size, btn_size, 0)
+                    row1.append(button1)
+                    row2.append(button2)
+                elif (x==(GRID_WIDTH-2) and y==(GRID_HEIGHT-2)):
+                    button1 = Node(screen,y,x, ENDING_NODE_COLOR, p1_x, p1_y, btn_size, btn_size, 0)
+                    button2 = Node(screen,y,x, ENDING_NODE_COLOR, p2_x, p2_y, btn_size, btn_size, 0)
                     row1.append(button1)
                     row2.append(button2)
                 else:
@@ -302,46 +310,46 @@ def run_scene_2(screen):
     starting_node_1, end_node_1, starting_node_2, end_node_2 = newGame()
 
     # pocitani pruchodu
-    bfs_pruchody = 0
-    astar_pruchody = 0
+    bfs_visited_count = 0
+    astar_visited_count = 0
 
     font_counter = pygame.font.SysFont('Arial', 22)
 
     # Tlacitka SPUSTIT a RESET pod mrizkami
     grid_bottom_y = padding_top + GRID_HEIGHT * node_size + 15
     total_grid_width = GRID_WIDTH * node_size
-    button_spustit_x = grid1_x + (total_grid_width - 160) // 2
+    button_start_x = grid1_x + (total_grid_width - 160) // 2
     button_reset_x = grid2_x + (total_grid_width - 160) // 2
     
-    button_spustit = Node(screen, 0, 0, START_BUTTON_COLOR, button_spustit_x, grid_bottom_y + 35, 160, 45, None, "SPUSTIT")
+    button_start = Node(screen, 0, 0, START_BUTTON_COLOR, button_start_x, grid_bottom_y + 35, 160, 45, None, "START")
     button_reset_s2 = Node(screen, 0, 0, RESET_BUTTON_COLOR, button_reset_x, grid_bottom_y + 35, 160, 45, None, "RESET")
     button_switch_scene = Node(screen, 0, 0, SWITCH_SCENE_COLOR, screen_width//2 - 50, 0, 100, 45, None, "SCENE 1")
     button_setup_start_end = Node(screen, 0, 0, BUTTON_START_END_COLOR, 0, 0, 200, 45, None, "SETUP START/END")
 
-    buttons_to_print = [button_spustit, button_reset_s2, button_switch_scene, button_setup_start_end]
+    buttons_to_print = [button_start, button_reset_s2, button_switch_scene, button_setup_start_end]
 
     def run_algorithms():
-        nonlocal bfs_pruchody, astar_pruchody, starting_node_1, end_node_1, starting_node_2, end_node_2
+        nonlocal bfs_visited_count, astar_visited_count, starting_node_1, end_node_1, starting_node_2, end_node_2
  
         algs1.BFS(starting_node_1, end_node_1, "compare")
         algs2.ASTAR(starting_node_2, end_node_2, "compare")
         # Pocitame nody ktere maji nastavenou vzdalenost (text) - tedy byly navstiveny
-        bfs_pruchody = sum(1 for row in node_matrix_1 for b in row if b.text != "")
-        astar_pruchody = sum(1 for row in node_matrix_2 for b in row if b.text != "")
+        bfs_visited_count = sum(1 for row in node_matrix_1 for b in row if b.text != "")
+        astar_visited_count = sum(1 for row in node_matrix_2 for b in row if b.text != "")
     
     def reset_scene():
-        nonlocal starting_node_1, end_node_1, starting_node_2, end_node_2, bfs_pruchody, astar_pruchody
+        nonlocal starting_node_1, end_node_1, starting_node_2, end_node_2, bfs_visited_count, astar_visited_count
         starting_node_1, end_node_1, starting_node_2, end_node_2 = newGame()
         algs1.resetAlg()
         algs2.resetAlg()
-        bfs_pruchody = 0
-        astar_pruchody = 0
+        bfs_visited_count = 0
+        astar_visited_count = 0
 
     select_mode = "create_grid"
     selecting_node = "starting"
     running = True
 
-    def funkceStart(event, matrix_source):
+    def selectStart(event, matrix_source):
         nonlocal starting_node_1, starting_node_2, selecting_node
         for row in matrix_source:
             for button in row:
@@ -357,7 +365,7 @@ def run_scene_2(screen):
                     starting_node_1.text = starting_node_2.text = ""
                     
                     selecting_node = "ending"
-    def funkceEnd(event, matrix_source):
+    def selectEnd(event, matrix_source):
         nonlocal end_node_1, end_node_2, selecting_node, select_mode
         for row in matrix_source:
             for button in row:
@@ -368,14 +376,14 @@ def run_scene_2(screen):
                     end_node_1 = node_matrix_1[r][c]
                     end_node_2 = node_matrix_2[r][c]
                     
-                    end_node_1.color = end_node_2.color = STARTING_NODE_COLOR
+                    end_node_1.color = end_node_2.color = ENDING_NODE_COLOR
                     end_node_1.text = end_node_2.text = ""
                     
                     selecting_node = "starting"
                     select_mode = "create_grid"
                     button_setup_start_end.color = BUTTON_START_END_COLOR
 
-    def synchronizaceFce(event, matrix_source, matrix_target, start_node, end_node):
+    def synchronizeMatrix(event, matrix_source, matrix_target, start_node, end_node):
         for source_row in matrix_source:
             for source_button in source_row:
                 if source_button.is_clicked(event):
@@ -402,7 +410,7 @@ def run_scene_2(screen):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE: return "MENU"               
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if button_spustit.is_clicked(event):
+                if button_start.is_clicked(event):
                     run_algorithms()
                 elif button_reset_s2.is_clicked(event):
                     reset_scene()
@@ -414,17 +422,17 @@ def run_scene_2(screen):
                 else:
                     if select_mode == "start_end":
                         if selecting_node == "starting":
-                            funkceStart(event, node_matrix_1)
-                            funkceStart(event, node_matrix_2)
+                            selectStart(event, node_matrix_1)
+                            selectStart(event, node_matrix_2)
                         else:
-                            funkceEnd(event, node_matrix_1)
-                            funkceEnd(event, node_matrix_2)
+                            selectEnd(event, node_matrix_1)
+                            selectEnd(event, node_matrix_2)
                     else:
                         # Loop pro prvni grid
-                        synchronizaceFce(event, node_matrix_1, node_matrix_2, starting_node_1, end_node_1)
+                        synchronizeMatrix(event, node_matrix_1, node_matrix_2, starting_node_1, end_node_1)
                         
                         # Loop pro druhy grid
-                        synchronizaceFce(event, node_matrix_2, node_matrix_1,  starting_node_2, end_node_2)
+                        synchronizeMatrix(event, node_matrix_2, node_matrix_1,  starting_node_2, end_node_2)
                         
         screen.fill(BACKGROUND_COLOR)
         # nadpisy mrizek
@@ -440,8 +448,8 @@ def run_scene_2(screen):
                 button.draw()
 
         # Labely s poctem navstivenych nodu pod kazdou mrizkou
-        label_bfs = font_counter.render(f"Navštíveno nodů: {bfs_pruchody}", True, HEADER_SCENE2_COLOR)
-        label_astar = font_counter.render(f"Navštíveno nodů: {astar_pruchody}", True, HEADER_SCENE2_COLOR)
+        label_bfs = font_counter.render(f"Navštíveno nodů: {bfs_visited_count}", True, HEADER_SCENE2_COLOR)
+        label_astar = font_counter.render(f"Navštíveno nodů: {astar_visited_count}", True, HEADER_SCENE2_COLOR)
         screen.blit(label_bfs, (grid1_x, grid_bottom_y))
         screen.blit(label_astar, (grid2_x, grid_bottom_y))
 

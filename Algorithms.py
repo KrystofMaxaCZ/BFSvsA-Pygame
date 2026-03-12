@@ -14,7 +14,7 @@ class Algorithms:
                 button.text = ""
                 if button.color == AVAILABLE_COLUMN_COLOR or button.color == WAY_COLOR:
                     button.type = 0
-                    button.distance = 0
+                    button.distance = float('inf')
                     button.predecessor = None
                     button.color = AVAILABLE_COLUMN_COLOR
                 elif button.color == STARTING_NODE_COLOR:
@@ -22,9 +22,14 @@ class Algorithms:
                     button.distance = 0
                     button.predecessor = None
                     button.color = STARTING_NODE_COLOR
+                elif button.color == ENDING_NODE_COLOR:
+                    button.type = 0
+                    button.distance = float('inf')
+                    button.predecessor = None
+                    button.color = ENDING_NODE_COLOR
                 elif button.color == WALL_COLOR:
                     button.type = 1
-                    button.distance = 0
+                    button.distance = float('inf')
                     button.predecessor = None
 
     def wayBack(self, node: Node, starting_node: Node):
@@ -44,7 +49,8 @@ class Algorithms:
         if neighbor_node.type == 0:
             neighbor_node.predecessor = current_node
             neighbor_node.distance = current_node.distance + 1
-            neighbor_node.type = 10
+            neighbor_node.type = 10 # uzamkneme node, navstivili jsme ho
+
             queue.append(neighbor_node)
     
 
@@ -65,7 +71,7 @@ class Algorithms:
         starting_node.type = 10
         queue.append(starting_node)
         
-        pocet_pruchodu = 0
+        visited_count = 0
 
         # starting_node = node_matrix[row, col]
         found = False
@@ -74,7 +80,7 @@ class Algorithms:
             node = queue.popleft()
             row = node.row
             col = node.col
-            pocet_pruchodu += 1
+            visited_count += 1
 
             # abychom nemeli tu samou funkci ale videli postup tak pouzijeme promennou purpose, tedy ucel jestli je to na porovnani nebo ne
             if purpose == "compare":
@@ -85,7 +91,6 @@ class Algorithms:
             
             # pokud jsem v cili, koncim, nasel jsem cestu
             if node == end_node:
-                print("Nasel jsem cestu")
                 found = True
                 self.wayBack(node, starting_node)
                 break
@@ -127,11 +132,15 @@ class Algorithms:
         neighbor_node = self.node_matrix[row][col]
 
         if neighbor_node.type == 0:
-            neighbor_node.predecessor = current_node
-            neighbor_node.type = 10
-            neighbor_node_score = self.nodeScore(neighbor_node, end_node)
+            # pokud je cesta kratsi, pouziju souseda, pokud ne, tak to nema smysl
+            new_distance = current_node.distance + 1
+            if new_distance < neighbor_node.distance:
+                neighbor_node.distance = new_distance
 
-            pqueue.put((neighbor_node_score, neighbor_node))
+                neighbor_node.predecessor = current_node
+                neighbor_node_score = self.nodeScore(neighbor_node, end_node)
+
+                pqueue.put((neighbor_node_score, neighbor_node))
 
     def ASTAR(self, starting_node: Node, end_node: Node, purpose: str):
         """
@@ -149,8 +158,8 @@ class Algorithms:
         starting_node.distance = 0
         starting_node.type = 10
         pqueue.put((0, starting_node))
-
-        pocet_pruchodu = 0
+        
+        visited_count = 0
 
         found = False
         while pqueue.empty() != True:
@@ -158,7 +167,9 @@ class Algorithms:
             node = pqueue.get()[1]
             row = node.row
             col = node.col
-            pocet_pruchodu += 1
+            visited_count += 1
+            node.type = 10 # uzamkneme node, musime to delat az po zpracovani
+
 
             if purpose == "compare":
                 node.text = str(node.distance)
@@ -168,7 +179,6 @@ class Algorithms:
 
             # pokud jsem v cili, koncim, nasel jsem cestu
             if node == end_node:
-                print("Nasel jsem cestu")
                 found = True
                 self.wayBack(node, starting_node)
                 break
@@ -186,4 +196,3 @@ class Algorithms:
         if found == False:
             print("cesta neexistuje")
 
-        print("ASTAR: Pocet navstivenych nodes = ", pocet_pruchodu)
