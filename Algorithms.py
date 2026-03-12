@@ -1,6 +1,6 @@
 from collections import deque
 from constants import *
-from Button import Button
+from Node import Node
 from queue import PriorityQueue
 
 
@@ -27,7 +27,7 @@ class Algorithms:
                     button.distance = 0
                     button.predecessor = None
 
-    def wayBack(self, node: Button, starting_node):
+    def wayBack(self, node: Node, starting_node: Node):
         """
         Rekurzivne najde cestu z end_node do starting_node a obarvuje
         
@@ -37,28 +37,18 @@ class Algorithms:
         if node.predecessor != starting_node:
             node.predecessor.color = WAY_COLOR
             self.wayBack(node.predecessor, starting_node)
-        
-    def nodeScore(self, node, end_node) -> int:
-        """
-        Docstring for nodeScore
-        
-        :param node: Description
-        :param end_node: Description
-        :return: vrati score toho 
-        :rtype: int, score pro heruistiku
-        """
-        node_predecessor = node.predecessor
-        node.distance = node_predecessor.distance + 1
-        row_end = end_node.row
-        col_end = end_node.col
-        row_node = node.row
-        col_node = node.col
 
-        score = abs(row_end - row_node) + abs(col_end - col_node)
-        score += node.distance
-        return score
+    def processNeighborBFS(self, queue, row: int, col: int, current_node: Node): 
+        neighbor_node = self.node_matrix[row][col]
+
+        if neighbor_node.type == 0:
+            neighbor_node.predecessor = current_node
+            neighbor_node.distance = current_node.distance + 1
+            neighbor_node.type = 10
+            queue.append(neighbor_node)
     
-    def BFS(self, starting_node, end_node, purpose):
+
+    def BFS(self, starting_node: Node, end_node: Node, purpose: str):
         """
         Najde nejkratsi cestu mezi starting_node a end_node
         
@@ -67,16 +57,14 @@ class Algorithms:
         :param end_node: node kde koncime
         """
         # vycisteni po vice spustenich
-        # resetAlg()
-        # zacneme od startu
         self.resetAlg()
+
+        # zacneme od startu
         queue = deque()
         starting_node.distance = 0
         starting_node.type = 10
         queue.append(starting_node)
-        # indexy v 2D poli
-        row = starting_node.row
-        col = starting_node.col
+        
         pocet_pruchodu = 0
 
         # starting_node = node_matrix[row, col]
@@ -104,41 +92,48 @@ class Algorithms:
             else:
                 # osetreni vystupu mimo pole
                 if (row - 1) >= 0:
-                    neighbour_node = self.node_matrix[row - 1][col]
-                    # type = 0 ... zelena availible space 
-                    if neighbour_node.type == 0:
-                        neighbour_node.predecessor = node
-                        neighbour_node.distance = node.distance + 1
-                        neighbour_node.type = 10
-                        queue.append(neighbour_node)
+                    self.processNeighborBFS(queue, row - 1, col, node)
                 if (row + 1) < GRID_HEIGHT:
-                    neighbour_node = self.node_matrix[row + 1][col]
-                    if neighbour_node.type == 0:
-                        neighbour_node.predecessor = node
-                        neighbour_node.distance = node.distance + 1
-                        neighbour_node.type = 10
-                        queue.append(neighbour_node)
+                    self.processNeighborBFS(queue, row + 1, col, node)
                 if (col - 1) >= 0:
-                    neighbour_node = self.node_matrix[row][col - 1]
-                    if neighbour_node.type == 0:
-                        neighbour_node.predecessor = node
-                        neighbour_node.distance = node.distance + 1
-                        neighbour_node.type = 10
-                        queue.append(neighbour_node)
+                   self.processNeighborBFS(queue, row, col - 1, node)
                 if (col + 1) < GRID_WIDTH:
-                    neighbour_node = self.node_matrix[row][col + 1]
-                    if neighbour_node.type == 0:
-                        neighbour_node.predecessor = node
-                        neighbour_node.distance = node.distance + 1
-                        neighbour_node.type = 10
-                        queue.append(neighbour_node)    
+                    self.processNeighborBFS(queue, row, col + 1, node)  
 
         if found == False:
             print("cesta neexistuje")
 
-        print("BFS: Pocet navstivenych nodes = ", pocet_pruchodu)
+    def nodeScore(self, node: Node, end_node: Node) -> int:
+        """
+        Docstring for nodeScore
+        
+        :param node: Description
+        :param end_node: Description
+        :return: vrati score toho 
+        :rtype: int, score pro heruistiku
+        """
+        node_predecessor = node.predecessor
+        node.distance = node_predecessor.distance + 1
+        row_end = end_node.row
+        col_end = end_node.col
+        row_node = node.row
+        col_node = node.col
 
-    def ASTAR(self, starting_node, end_node, purpose):
+        score = abs(row_end - row_node) + abs(col_end - col_node)
+        score += node.distance
+        return score
+    
+    def processNeighborASTAR(self, pqueue, row: int, col: int, current_node: Node, end_node: Node): 
+        neighbor_node = self.node_matrix[row][col]
+
+        if neighbor_node.type == 0:
+            neighbor_node.predecessor = current_node
+            neighbor_node.type = 10
+            neighbor_node_score = self.nodeScore(neighbor_node, end_node)
+
+            pqueue.put((neighbor_node_score, neighbor_node))
+
+    def ASTAR(self, starting_node: Node, end_node: Node, purpose: str):
         """
         Docstring for ASTAR
         velice podobne BFS
@@ -146,19 +141,16 @@ class Algorithms:
 
         """
         # vycisteni po vice spustenich
-        # resetAlg()
-    # zacneme od startu
         self.resetAlg()
 
         pqueue = PriorityQueue()
+
+        #zacneme od startu
         starting_node.distance = 0
         starting_node.type = 10
         pqueue.put((0, starting_node))
-        # indexy v 2D poli
-        row = starting_node.row
-        col = starting_node.col
-        pocet_pruchodu = 0
 
+        pocet_pruchodu = 0
 
         found = False
         while pqueue.empty() != True:
@@ -183,38 +175,13 @@ class Algorithms:
             else:
                 # osetreni vystupu mimo pole
                 if (row - 1) >= 0:
-                    neighbour_node = self.node_matrix[row - 1][col]
-                    # type = 0 ... zelena availible space 
-                    if neighbour_node.type == 0:
-                        neighbour_node.predecessor = node
-                        neighbour_node.type = 10
-                        neighbour_node_score = self.nodeScore(neighbour_node, end_node)
-
-                        pqueue.put((neighbour_node_score, neighbour_node))
+                    self.processNeighborASTAR(pqueue, row - 1, col, node, end_node)
                 if (row + 1) < GRID_HEIGHT:
-                    neighbour_node = self.node_matrix[row + 1][col]
-                    if neighbour_node.type == 0:
-                        neighbour_node.predecessor = node
-                        neighbour_node.type = 10
-                        neighbour_node_score = self.nodeScore(neighbour_node, end_node)
-
-                        pqueue.put((neighbour_node_score, neighbour_node))
+                    self.processNeighborASTAR(pqueue, row + 1, col, node, end_node)
                 if (col - 1) >= 0:
-                    neighbour_node = self.node_matrix[row][col - 1]
-                    if neighbour_node.type == 0:
-                        neighbour_node.predecessor = node
-                        neighbour_node.type = 10
-                        neighbour_node_score = self.nodeScore(neighbour_node, end_node)
-
-                        pqueue.put((neighbour_node_score, neighbour_node))
+                    self.processNeighborASTAR(pqueue, row, col - 1, node, end_node)
                 if (col + 1) < GRID_WIDTH:
-                    neighbour_node = self.node_matrix[row][col + 1]
-                    if neighbour_node.type == 0:
-                        neighbour_node.predecessor = node
-                        neighbour_node.type = 10
-                        neighbour_node_score = self.nodeScore(neighbour_node, end_node)
-
-                        pqueue.put((neighbour_node_score, neighbour_node))    
+                   self.processNeighborASTAR(pqueue, row, col + 1, node, end_node)
 
         if found == False:
             print("cesta neexistuje")

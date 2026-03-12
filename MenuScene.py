@@ -19,8 +19,8 @@ class MenuScene():
 
         menu.add.label("BFS vs A*", font_size=30, font_color=(0, 255, 150))
         
-        menu.add.button('Scéna 1: Samostatný Algoritmus', lambda: start_level("LEVEL1"))
-        menu.add.button('Scéna 2: Porovnání BFS vs A*', lambda: start_level("LEVEL2"))
+        menu.add.button('Scéna 1: Samostatný Algoritmus', lambda: start_level("SCENE1"))
+        menu.add.button('Scéna 2: Porovnání BFS vs A*', lambda: start_level("SCENE2"))
         
         menu.add.label("-" * 20, font_size=20)
         menu.add.button('Ukončit aplikaci', pygame_menu.events.EXIT)

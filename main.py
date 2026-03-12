@@ -19,9 +19,9 @@ def main():
     while state != "QUIT":
         if state == "MENU":
             state = menu.run_menu(screen)
-        elif state == "LEVEL1":
+        elif state == "SCENE1":
             state = run_scene_1(screen)
-        elif state == "LEVEL2":
+        elif state == "SCENE2":
             state = run_scene_2(screen)
 
     # Quit Pygame

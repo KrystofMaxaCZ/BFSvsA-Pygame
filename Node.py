@@ -1,6 +1,6 @@
 import pygame
 
-class Button:
+class Node:
     """
     Objekt Button, budeme vyuzivat v main.py pro prehlednejsi generovani tlacitek = pole v 2D
     takhle budeme mit kazde policko jako obejkt ktery ma sve interakce
